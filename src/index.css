@@ -1,0 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg: #F9F8F6;
+    --color-surface: #FFFFFF;
+    --color-forest: #2C4C3B;
+    --color-forest-light: #3D6B53;
+    --color-terracotta: #A8615A;
+    --color-sand: #D4A373;
+    --color-sage: #7C9082;
+    --color-charcoal: #2D2D2D;
+    --color-smoke: #6B6B6B;
+    --color-mist: #E8E6E1;
+  }
+
+  .dark {
+    --color-bg: #1A1F1C;
+    --color-surface: #232B25;
+    --color-charcoal: #F0EDE8;
+    --color-smoke: #A0A8A3;
+    --color-mist: #2E3830;
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-charcoal);
+    margin: 0;
+    min-height: 100vh;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-mist);
+    border-radius: 8px;
+  }
+}
+
+@layer components {
+  .app-bg {
+    background-color: var(--color-bg);
+  }
+  .surface {
+    background-color: var(--color-surface);
+  }
+  .text-primary {
+    color: var(--color-charcoal);
+  }
+  .text-secondary {
+    color: var(--color-smoke);
+  }
+  .border-subtle {
+    border-color: var(--color-mist);
+  }
+
+  .shimmer-bg {
+    background: linear-gradient(
+      90deg,
+      var(--color-mist) 25%,
+      var(--color-surface) 50%,
+      var(--color-mist) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.5s infinite;
+  }
+
+  .priority-high {
+    color: var(--color-high);
+    background-color: var(--color-high-bg);
+  }
+  .priority-medium {
+    color: var(--color-medium);
+    background-color: var(--color-medium-bg);
+  }
+  .priority-low {
+    color: var(--color-low);
+    background-color: var(--color-low-bg);
+  }
+
+  .priority-dot-high { background-color: var(--color-high-dot); }
+  .priority-dot-medium { background-color: var(--color-medium-dot); }
+  .priority-dot-low { background-color: var(--color-low-dot); }
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
