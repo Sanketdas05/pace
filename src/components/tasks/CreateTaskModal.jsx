@@ -6,6 +6,7 @@ import { useTasks } from '../../context/TaskContext';
 import { useNavigate } from 'react-router-dom';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse } from '../../config/ai';
 
 
 // ─── Priority Option ──────────────────────────────────────────────────────────
@@ -63,11 +64,6 @@ export default function CreateTaskModal({ onClose }) {
       setAiLoading(true);
       setAiDone(false);
       try {
-        const isDev = import.meta.env.DEV;
-        const GROQ_URL = isDev
-          ? '/api/groq/openai/v1/chat/completions'
-          : 'https://api.groq.com/openai/v1/chat/completions';
-        
         const headers = { 'Content-Type': 'application/json' };
         if (!isDev) {
           headers['Authorization'] = `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`;
@@ -77,7 +73,7 @@ export default function CreateTaskModal({ onClose }) {
           method: 'POST',
           headers,
           body: JSON.stringify({
-            model: "llama-3.3-70b-versatile",
+            model: DEFAULT_AI_MODEL,
             messages: [{
               role: "system",
               content: "You are a subtask generator. Generate 3 to 5 actionable subtasks for the user's task. Return ONLY a JSON object with a 'subtasks' array containing strings."
@@ -92,7 +88,7 @@ export default function CreateTaskModal({ onClose }) {
         
         if (!res.ok) throw new Error("API Error");
         const data = await res.json();
-        const parsed = JSON.parse(data.choices[0].message.content);
+        const parsed = parseAIJsonResponse(data.choices[0].message.content);
         if (parsed.subtasks && Array.isArray(parsed.subtasks)) {
           setSubtasks(parsed.subtasks.map((t, i) => ({ id: `gen-${Date.now()}-${i}`, title: t, done: false })));
         } else {

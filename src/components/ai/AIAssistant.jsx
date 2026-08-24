@@ -5,11 +5,7 @@ import { Sparkles, Send, ChevronDown } from 'lucide-react';
 import { useTasks } from '../../context/TaskContext';
 import { useAI } from '../../context/AIContext';
 import { useState } from 'react';
-
-const isDev = import.meta.env.DEV;
-const GROQ_URL = isDev
-  ? '/api/groq/openai/v1/chat/completions'
-  : 'https://api.groq.com/openai/v1/chat/completions';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL } from '../../config/ai';
 
 const QUICK_PROMPTS = [
   'Plan my day',
@@ -158,7 +154,7 @@ export default function AIAssistant() {
         }));
 
       const body = {
-        model: "llama-3.3-70b-versatile",
+        model: DEFAULT_AI_MODEL,
         messages: [
           { role: "system", content: systemPrompt },
           ...history,

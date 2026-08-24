@@ -5,11 +5,7 @@ import { CUSTOM_THEME_FIELDS, DEFAULT_CUSTOM_THEME } from '../../lib/themes';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../../lib/firestore';
-
-const isDev = import.meta.env.DEV;
-const GROQ_URL = isDev
-  ? '/api/groq/openai/v1/chat/completions'
-  : 'https://api.groq.com/openai/v1/chat/completions';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse } from '../../config/ai';
 
 const groups = [...new Set(CUSTOM_THEME_FIELDS.map((f) => f.group))];
 
@@ -181,7 +177,7 @@ Be creative with the exact hues to perfectly match the user's prompt (e.g. for "
 Return ONLY valid JSON format with these 9 keys. No markdown blocks, no explanations.`;
 
       const body = {
-        model: "llama-3.3-70b-versatile",
+        model: DEFAULT_AI_MODEL,
         messages: [
           { role: "system", content: systemPrompt },
           { role: "user", content: aiPrompt }
@@ -205,7 +201,7 @@ Return ONLY valid JSON format with these 9 keys. No markdown blocks, no explanat
 
       const data = await res.json();
       const content = data.choices?.[0]?.message?.content || "{}";
-      const newColors = JSON.parse(content);
+      const newColors = parseAIJsonResponse(content);
       
       Object.keys(newColors).forEach(k => {
          handleChange(k, newColors[k]);
