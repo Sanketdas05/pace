@@ -1,7 +1,7 @@
 // src/pages/SettingsPage.jsx
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogOut, Bell, Shield, User, ChevronDown, BookOpen, Info, X } from 'lucide-react';
+import { LogOut, Bell, Shield, User, ChevronDown, BookOpen, Info, X, Pencil } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useTasks } from '../context/TaskContext';
 import { useGamification, getUserTitle } from '../context/GamificationContext';
@@ -32,6 +32,8 @@ export default function SettingsPage() {
 
   const [displayNameInput, setDisplayNameInput] = useState(currentUser?.displayName || '');
   const [photoUrlInput, setPhotoUrlInput] = useState(currentUser?.photoURL || '');
+  const [isEditingName, setIsEditingName] = useState(false);
+  const nameInputRef = useRef(null);
 
   useEffect(() => {
     if (currentUser?.displayName) {
@@ -89,14 +91,38 @@ export default function SettingsPage() {
             />
           </div>
           <div className="flex-1 min-w-0">
-            <input
-              type="text"
-              value={displayNameInput}
-              onChange={(e) => setDisplayNameInput(e.target.value)}
-              onBlur={handleNameBlur}
-              placeholder="Your Name"
-              className="font-bold text-[var(--color-charcoal)] text-base sm:text-lg bg-transparent border-b border-transparent hover:border-[var(--color-mist)] focus:border-[var(--color-primary)] focus:outline-none transition-smooth px-0.5 -ml-0.5 w-full max-w-[220px]"
-            />
+            <div className="flex items-center gap-1.5 group max-w-[260px]">
+              <input
+                ref={nameInputRef}
+                type="text"
+                value={displayNameInput}
+                onChange={(e) => setDisplayNameInput(e.target.value)}
+                onFocus={() => setIsEditingName(true)}
+                onBlur={() => {
+                  setIsEditingName(false);
+                  handleNameBlur();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    nameInputRef.current?.blur();
+                  }
+                }}
+                placeholder="Your Name"
+                className="font-bold text-[var(--color-charcoal)] text-base sm:text-lg bg-transparent border-b border-transparent hover:border-[var(--color-mist)] focus:border-[var(--color-primary)] focus:outline-none transition-smooth px-0.5 -ml-0.5 min-w-0 flex-1 truncate cursor-pointer focus:cursor-text"
+                title="Click to edit your display name"
+              />
+              <button
+                type="button"
+                onClick={() => nameInputRef.current?.focus()}
+                className={`p-1.5 rounded-lg text-[var(--color-smoke)] hover:text-[var(--color-primary)] hover:bg-[var(--color-mist)]/50 transition-colors shrink-0 ${
+                  isEditingName ? 'text-[var(--color-primary)] opacity-100 bg-[var(--color-mist)]/30' : 'opacity-60 group-hover:opacity-100'
+                }`}
+                title="Edit name"
+                aria-label="Edit name"
+              >
+                <Pencil size={14} />
+              </button>
+            </div>
             {profile?.streak > 0 && (
               <p className="text-[var(--color-primary)] font-bold text-[11px] uppercase tracking-wide mt-0.5 mb-1">
                 {getUserTitle(profile.streak)}
