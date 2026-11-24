@@ -74,49 +74,16 @@ export default function Layout({ children }) {
                   whileHover={{ scale: 1.08, x: -4 }}
                   whileTap={{ scale: 0.94 }}
                   title="Pace AI"
-                  className="w-12 h-12 rounded-2xl shadow-xl flex items-center justify-center transition-smooth"
-                  style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-low-dot))' }}
+                  className="w-12 h-12 rounded-2xl shadow-lg flex items-center justify-center transition-smooth border border-[var(--color-mist)]"
+                  style={{
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'var(--color-primary-text, #ffffff)'
+                  }}
                   aria-label="Open AI Assistant"
                 >
-                  <Sparkles size={20} className="text-white" />
+                  <Sparkles size={20} />
                 </motion.button>
               )}
-            </motion.div>
-
-            {/* MOBILE: stacked above bottom nav */}
-            <motion.div
-              key="mobile-fab-group"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 20 }}
-              className="lg:hidden fixed right-5 bottom-24 z-40 flex flex-col gap-3 items-center"
-            >
-              {/* AI Assistant */}
-              {!aiOpen && (
-                <motion.button
-                  onClick={() => setAiOpen(true)}
-                  whileTap={{ scale: 0.94 }}
-                  className="w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center"
-                  style={{ background: 'linear-gradient(135deg, var(--color-primary), var(--color-low-dot))' }}
-                  aria-label="Open AI Assistant"
-                >
-                  <Sparkles size={22} className="text-white" />
-                </motion.button>
-              )}
-
-              {/* Daily Review */}
-              <motion.button
-                onClick={() => setShowReviewModal(true)}
-                whileTap={{ scale: 0.94 }}
-                className="w-14 h-14 rounded-2xl shadow-xl flex items-center justify-center border border-[var(--color-mist)]"
-                style={{
-                  backgroundColor: todayReview ? 'var(--color-low-bg)' : 'var(--color-bg)',
-                  color: todayReview ? 'var(--color-low-dot)' : 'var(--color-primary)',
-                }}
-                aria-label="Open Daily Review"
-              >
-                <BookOpen size={22} />
-              </motion.button>
             </motion.div>
           </>
         )}

@@ -1,156 +1,141 @@
-import { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+// src/context/NotificationContext.jsx
+import { createContext, useContext, useEffect, useState, useMemo, useCallback } from 'react';
 import { useTasks } from './TaskContext';
-import { Bell, X, AlertTriangle } from 'lucide-react';
+import { isOverdue, formatTimeOnly, formatDateTime } from '../lib/dateUtils';
 
 const NotificationContext = createContext(null);
 
 export function useNotifications() {
-  return useContext(NotificationContext);
+  const context = useContext(NotificationContext);
+  if (!context) {
+    return {
+      notifications: [],
+      unreadCount: 0,
+      dismissNotification: () => {},
+      clearAllNotifications: () => {},
+      toastPopupsEnabled: false,
+      setToastPopupsEnabled: () => {},
+    };
+  }
+  return context;
 }
 
 export function NotificationProvider({ children }) {
-  const { tasks, updateTask } = useTasks();
-  const [toasts, setToasts] = useState([]);
+  const { tasks } = useTasks();
 
-  const addToast = useCallback((title, message, type = 'info') => {
-    const id = Date.now().toString();
-    setToasts((prev) => [...prev, { id, title, message, type }]);
-    
-    // Auto remove after 6 seconds
-    setTimeout(() => {
-      removeToast(id);
-    }, 6000);
-  }, []);
-
-  const removeToast = useCallback((id) => {
-    setToasts((prev) => prev.filter((t) => t.id !== id));
-  }, []);
-
-  // Timer to check tasks every minute
-  useEffect(() => {
-    // Request permission for mobile/desktop native notifications
-    if ('Notification' in window && Notification.permission === 'default') {
-      Notification.requestPermission();
+  // Toast popups setting: default false (Calm ambient notifications, no invasive toasts)
+  const [toastPopupsEnabled, setToastPopupsEnabledState] = useState(() => {
+    try {
+      const saved = localStorage.getItem('pace-toast-popups');
+      return saved !== null ? JSON.parse(saved) : false; // Calm mode by default
+    } catch {
+      return false;
     }
+  });
 
-    if (!tasks || tasks.length === 0) return;
+  const setToastPopupsEnabled = useCallback((val) => {
+    setToastPopupsEnabledState(val);
+    try {
+      localStorage.setItem('pace-toast-popups', JSON.stringify(val));
+    } catch {}
+  }, []);
 
-    const checkTasks = () => {
-      const now = new Date();
-      
-      const intervals = [
-        { mins: 60, key: 'notified60m', title: '1 Hour Left!' },
-        { mins: 30, key: 'notified30m', title: '30 Minutes Left!' },
-        { mins: 15, key: 'notified15m', title: '15 Minutes Left!' },
-        { mins: 10, key: 'notified10m', title: '10 Minutes Left!' },
-        { mins: 5,  key: 'notified5m',  title: '5 Minutes Left! Hurry!' },
-      ];
+  // Dismissed notification IDs (persisted per session)
+  const [dismissedIds, setDismissedIds] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('pace-dismissed-notifications');
+      return saved ? new Set(JSON.parse(saved)) : new Set();
+    } catch {
+      return new Set();
+    }
+  });
 
-      tasks.forEach(task => {
-        if (task.completed || !task.dueDate || !task.dueTime) return;
-        
-        const dueDateTime = new Date(`${task.dueDate}T${task.dueTime}`);
-        const diffMs = dueDateTime - now;
-        const diffMins = Math.floor(diffMs / (1000 * 60));
+  const dismissNotification = useCallback((id) => {
+    setDismissedIds((prev) => {
+      const next = new Set(prev);
+      next.add(id);
+      try {
+        sessionStorage.setItem('pace-dismissed-notifications', JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+  }, []);
 
-        // Skip if overdue
-        if (diffMins < 0) return;
+  // Derive notifications from tasks
+  const notifications = useMemo(() => {
+    if (!tasks || tasks.length === 0) return [];
+    const list = [];
+    const now = new Date();
 
-        // 1. Silently mark any intervals that have already passed as "notified"
-        // This prevents a newly created 14-min task from triggering the 60m and 30m notifications
-        const updates = {};
-        let needsUpdate = false;
-        
-        intervals.forEach(interval => {
-          if (diffMins < interval.mins - 2 && !task[interval.key]) {
-            updates[interval.key] = true;
-            needsUpdate = true;
-          }
-        });
+    tasks.forEach((task) => {
+      if (task.completed || task.deleted) return;
 
-        if (needsUpdate) {
-          updateTask(task.id, updates);
+      // 1. Overdue tasks
+      if (task.dueDate && isOverdue(task.dueDate, task.dueTime)) {
+        const id = `overdue-${task.id}`;
+        if (!dismissedIds.has(id)) {
+          list.push({
+            id,
+            taskId: task.id,
+            type: 'overdue',
+            title: task.title,
+            priority: task.priority,
+            message: 'Task deadline has passed',
+            time: task.dueDate ? formatDateTime(task.dueDate, task.dueTime) : 'Past due',
+            isUrgent: true,
+          });
         }
+        return;
+      }
 
-        // 2. Find the exact interval we are crossing right now
-        for (const interval of intervals) {
-          if (diffMins <= interval.mins && diffMins >= interval.mins - 2 && !task[interval.key] && !updates[interval.key]) {
-            const message = `Time is running out for "${task.title}". Complete it to protect your streak.`;
-            
-            // In-App Toast
-            addToast(interval.title, message, 'warning');
-            
-            // Native Notification
-            if ('Notification' in window && Notification.permission === 'granted') {
-              if (navigator.serviceWorker && navigator.serviceWorker.controller) {
-                navigator.serviceWorker.ready.then(reg => {
-                  reg.showNotification(interval.title, { body: message, icon: '/pwa-192x192.png' });
-                });
-              } else {
-                new Notification(interval.title, { body: message });
-              }
-            }
-
-            // Mark as notified
-            updateTask(task.id, { [interval.key]: true });
-            break; // Only trigger one notification per cycle
+      // 2. Approaching deadlines (< 60 minutes)
+      if (task.dueDate && task.dueTime) {
+        const dueTime = new Date(`${task.dueDate}T${task.dueTime}`);
+        const diffMins = Math.floor((dueTime - now) / 60000);
+        if (diffMins > 0 && diffMins <= 60) {
+          const id = `due-soon-${task.id}`;
+          if (!dismissedIds.has(id)) {
+            list.push({
+              id,
+              taskId: task.id,
+              type: 'due-soon',
+              title: task.title,
+              priority: task.priority,
+              message: diffMins <= 15 ? `Due in ${diffMins}m! Complete to protect streak.` : `Due in ${diffMins} minutes`,
+              time: formatTimeOnly(task.dueTime),
+              isUrgent: diffMins <= 15,
+            });
           }
         }
-      });
-    };
+      }
+    });
 
-    // Check immediately, then every minute
-    checkTasks();
-    const intervalId = setInterval(checkTasks, 60000);
+    return list;
+  }, [tasks, dismissedIds]);
 
-    return () => clearInterval(intervalId);
-  }, [tasks, addToast, updateTask]);
+  const clearAllNotifications = useCallback(() => {
+    setDismissedIds((prev) => {
+      const next = new Set(prev);
+      notifications.forEach((n) => next.add(n.id));
+      try {
+        sessionStorage.setItem('pace-dismissed-notifications', JSON.stringify([...next]));
+      } catch {}
+      return next;
+    });
+  }, [notifications]);
 
   return (
-    <NotificationContext.Provider value={{ addToast }}>
+    <NotificationContext.Provider
+      value={{
+        notifications,
+        unreadCount: notifications.length,
+        dismissNotification,
+        clearAllNotifications,
+        toastPopupsEnabled,
+        setToastPopupsEnabled,
+      }}
+    >
       {children}
-      
-      {/* Toast Container */}
-      <div className="fixed bottom-6 right-6 z-[200] flex flex-col gap-3 pointer-events-none">
-        <AnimatePresence>
-          {toasts.map((toast) => (
-            <motion.div
-              key={toast.id}
-              initial={{ opacity: 0, x: 50, scale: 0.95 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-              className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-2xl border ${
-                toast.type === 'warning' 
-                  ? 'bg-[var(--color-surface)] border-[var(--color-high-dot)] shadow-[0_8px_30px_rgba(0,0,0,0.12)] ring-1 ring-[var(--color-high-dot)]/20' 
-                  : 'bg-[var(--color-surface)] border-[var(--color-mist)] shadow-[0_8px_30px_rgba(0,0,0,0.08)]'
-              } w-80 relative overflow-hidden`}
-            >
-              <div className={`mt-0.5 ${toast.type === 'warning' ? 'text-[var(--color-high-dot)]' : 'text-[var(--color-primary)]'}`}>
-                {toast.type === 'warning' ? <AlertTriangle size={20} /> : <Bell size={20} />}
-              </div>
-              
-              <div className="flex-1 pr-6">
-                <h4 className="text-sm font-bold text-[var(--color-charcoal)] mb-1">
-                  {toast.title}
-                </h4>
-                <p className={`text-xs ${toast.type === 'warning' ? 'text-[var(--color-high-dot)] font-medium' : 'text-[var(--color-smoke)]'} leading-snug`}>
-                  {toast.message}
-                </p>
-              </div>
-
-              <button
-                onClick={() => removeToast(toast.id)}
-                className={`absolute top-3 right-3 p-1 rounded-md text-[var(--color-smoke)] transition-smooth ${
-                  toast.type === 'warning' ? 'hover:bg-[var(--color-high-bg)] hover:text-[var(--color-high-dot)]' : 'hover:bg-[var(--color-mist)] hover:text-[var(--color-charcoal)]'
-                }`}
-              >
-                <X size={14} />
-              </button>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-      </div>
     </NotificationContext.Provider>
   );
 }

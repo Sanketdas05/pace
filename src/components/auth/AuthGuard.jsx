@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 
 export default function AuthGuard({ children }) {
   const { currentUser, authLoading } = useAuth();
+  const location = useLocation();
 
   if (authLoading) {
     return (
@@ -17,8 +18,6 @@ export default function AuthGuard({ children }) {
       </div>
     );
   }
-
-  const location = useLocation();
 
   if (!currentUser) {
     return <Navigate to="/login" state={{ from: location.pathname }} replace />;

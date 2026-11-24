@@ -5,6 +5,7 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import toast from 'react-hot-toast';
 import { useTasks } from '../../context/TaskContext';
 import { useAuth } from '../../context/AuthContext';
+import { useNotifications } from '../../context/NotificationContext';
 import { db } from '../../lib/firebase';
 import { Bell, MessageSquare, Clock } from 'lucide-react';
 import { isOverdue } from '../../lib/dateUtils';
@@ -12,10 +13,12 @@ import { isOverdue } from '../../lib/dateUtils';
 export default function GlobalNotificationListener() {
   const { tasks } = useTasks();
   const { currentUser } = useAuth();
+  const { toastPopupsEnabled } = useNotifications();
   const navigate = useNavigate();
   const location = useLocation();
   const listenersRef = useRef({});
   const initialLoadRef = useRef({});
+  const initialDeadlineCheckRef = useRef(true);
   const alertedTasksRef = useRef(new Set());
 
   // 1. Listen for new chat messages
@@ -88,7 +91,7 @@ export default function GlobalNotificationListener() {
                       </div>
                     </div>
                   </motion.div>
-                ), { duration: 35000, position: 'top-center' });
+                ), { duration: 4000, position: 'bottom-right' });
               }
             }
           });
@@ -115,6 +118,8 @@ export default function GlobalNotificationListener() {
     if (!tasks || tasks.length === 0) return;
 
     const checkDeadlines = () => {
+      const isFirstRun = initialDeadlineCheckRef.current;
+
       tasks.forEach(task => {
         if (task.completed || task.deleted || !task.dueDate || !task.dueTime) return;
         
@@ -144,7 +149,14 @@ export default function GlobalNotificationListener() {
         
         if (milestone) {
           const alertKey = `${task.id}-${milestone}`;
-          if (!alertedTasksRef.current.has(alertKey)) {
+          // On first run: mark existing milestones as already known without firing toasts!
+          if (isFirstRun) {
+            alertedTasksRef.current.add(alertKey);
+            return;
+          }
+
+          // Subsequent live checks: only fire if toast popups are enabled by user
+          if (toastPopupsEnabled && !alertedTasksRef.current.has(alertKey)) {
             alertedTasksRef.current.add(alertKey);
             
             toast.custom((t) => (
@@ -160,27 +172,31 @@ export default function GlobalNotificationListener() {
                   toast.dismiss(t.id);
                   navigate(`/task/${task.id}`);
                 }}
-                className={`${t.visible ? 'animate-enter' : 'animate-leave'} cursor-pointer max-w-sm w-full bg-[var(--color-surface)] shadow-lg rounded-2xl pointer-events-auto flex ring-1 ring-[var(--color-mist)] p-4 hover:scale-105 transition-transform`}
+                className={`${t.visible ? 'animate-enter' : 'animate-leave'} cursor-pointer max-w-sm w-full bg-[var(--color-surface)] shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-[var(--color-mist)] p-3.5 hover:scale-102 transition-transform`}
               >
-                <div className={`rounded-full w-10 h-10 flex items-center justify-center shrink-0 ${milestone === 'overdue' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
-                  <Clock size={20} />
+                <div className={`rounded-xl w-9 h-9 flex items-center justify-center shrink-0 ${milestone === 'overdue' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'}`}>
+                  <Clock size={18} />
                 </div>
-                <div className="ml-3 flex-1">
-                   <p className="text-sm font-bold text-[var(--color-charcoal)]">{text}</p>
-                   <p className="text-xs text-[var(--color-smoke)] mt-1 line-clamp-1">{task.title}</p>
+                <div className="ml-3 flex-1 min-w-0">
+                   <p className="text-xs font-bold text-[var(--color-charcoal)] leading-tight">{text}</p>
+                   <p className="text-xs text-[var(--color-smoke)] mt-0.5 truncate">{task.title}</p>
                 </div>
               </motion.div>
-            ), { duration: 35000, position: 'top-center' });
+            ), { duration: 4000, position: 'bottom-right' });
           }
         }
       });
+
+      if (isFirstRun) {
+        initialDeadlineCheckRef.current = false;
+      }
     };
 
-    // Check immediately and then every minute
+    // Check immediately (will silently record initial state) and then every minute
     checkDeadlines();
     const interval = setInterval(checkDeadlines, 60000);
     return () => clearInterval(interval);
-  }, [tasks]);
+  }, [tasks, toastPopupsEnabled, navigate]);
 
   return null;
 }

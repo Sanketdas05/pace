@@ -384,7 +384,7 @@ export default function TaskDetailsPage() {
               <button
                 onClick={copyInviteLink}
                 className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg text-white font-semibold text-sm transition-smooth"
-                style={{ backgroundColor: linkCopied ? 'var(--color-low-dot)' : 'var(--color-primary)' }}
+                style={{ backgroundColor: linkCopied ? 'var(--color-charcoal)' : 'var(--color-primary)' }}
               >
                 {linkCopied ? <Check size={16} /> : <LinkIcon size={16} />}
                 {linkCopied ? 'Link Copied!' : 'Copy Invite Link'}

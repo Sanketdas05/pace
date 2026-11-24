@@ -2,9 +2,13 @@
 
 export const isDev = import.meta.env.DEV;
 
+// In local dev, use the Vite dev proxy (/api/groq).
+// In production:
+// 1. If VITE_AI_PROXY_URL is set (e.g. https://your-project.vercel.app/api/ai), calls that secure serverless proxy.
+// 2. Otherwise calls Groq directly with client key.
 export const GROQ_URL = isDev
   ? '/api/groq/openai/v1/chat/completions'
-  : 'https://api.groq.com/openai/v1/chat/completions';
+  : (import.meta.env.VITE_AI_PROXY_URL || 'https://api.groq.com/openai/v1/chat/completions');
 
 // Default model for task creation, theme building, and workflow planning
 // Can be customized in .env with VITE_GROQ_MODEL

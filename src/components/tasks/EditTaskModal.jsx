@@ -139,11 +139,12 @@ export default function EditTaskModal({ task, onClose }) {
         className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center px-4"
       >
         <motion.div
+          data-lenis-prevent
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
           onClick={(e) => e.stopPropagation()}
-          className="relative surface p-6 rounded-2xl shadow-2xl max-w-md w-full border border-[var(--color-mist)] max-h-[90vh] overflow-y-auto scrollbar-hide"
+          className="relative surface p-6 rounded-2xl shadow-2xl max-w-md w-full border border-[var(--color-mist)] max-h-[90vh] overflow-y-auto scrollbar-hide overscroll-contain"
         >
           <button
             onClick={onClose}

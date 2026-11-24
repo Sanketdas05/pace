@@ -17,22 +17,33 @@ function isOverdue(task) {
   return new Date(task.dueDate + 'T00:00:00') < today;
 }
 
+export function isTaskOnDate(task, year, month, day) {
+  if (task.deleted) return false;
+
+  // Do not show habits or recurring habit tasks in calendar or timeline to avoid spamming every day
+  if (task.category === 'habit') return false;
+
+  const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+  // Only display tasks scheduled for this exact calendar date
+  return task.dueDate === dateStr;
+}
+
 function getTasksForDate(tasks, year, month, day) {
-  const ds = `${year}-${String(month + 1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-  return tasks.filter((t) => t.dueDate === ds);
+  return tasks.filter((t) => isTaskOnDate(t, year, month, day));
 }
 
 // Priority pill inside day cell
 function MiniTaskPill({ task }) {
   return (
     <div
-      className="w-full rounded-md px-1.5 py-0.5 text-[9px] font-semibold truncate leading-tight"
+      className="w-full rounded-md px-1.5 py-0.5 text-[9px] font-semibold truncate leading-tight flex items-center gap-1"
       style={{
         backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
         color: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'})`,
       }}
     >
-      {task.title}
+      <span className="truncate">{task.title}</span>
     </div>
   );
 }
@@ -70,9 +81,11 @@ export default function CalendarPage() {
 
   // Monthly task summary for the mini-stats strip
   const monthTasks = tasks.filter((t) => {
-    if (!t.dueDate) return false;
-    const d = new Date(t.dueDate + 'T00:00:00');
-    return d.getMonth() === month && d.getFullYear() === year;
+    if (t.deleted) return false;
+    for (let d = 1; d <= daysInMonth; d++) {
+      if (isTaskOnDate(t, year, month, d)) return true;
+    }
+    return false;
   });
 
   const variants = {
@@ -357,15 +370,22 @@ export default function CalendarPage() {
                         )}
                       </div>
                       <div className="flex flex-col items-end gap-1.5">
-                        <span
-                          className="text-[10px] font-bold px-2 py-0.5 rounded-full"
-                          style={{
-                            backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
-                            color: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'})`,
-                          }}
-                        >
-                          {task.priority}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {(task.repeatDays?.length > 0 || task.category === 'daily' || task.category === 'habit') && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-[var(--color-mist)] text-[var(--color-smoke)]">
+                              🔁 Daily
+                            </span>
+                          )}
+                          <span
+                            className="text-[10px] font-bold px-2 py-0.5 rounded-full"
+                            style={{
+                              backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
+                              color: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'})`,
+                            }}
+                          >
+                            {task.priority}
+                          </span>
+                        </div>
                         {task.completed && (
                           <span className="text-[10px] font-medium" style={{ color: 'var(--color-low-dot)' }}>
                             ✓ Done
@@ -431,7 +451,7 @@ function TimelineView({ tasks, viewDate, selectedDay, setSelectedDay }) {
   const activeDateStr = `${year}-${String(month + 1).padStart(2,'0')}-${String(activeDay).padStart(2,'0')}`;
 
   const days = Array.from({ length: daysInMonth }).map((_, i) => new Date(year, month, i + 1));
-  const dayTasks = tasks.filter(t => !t.deleted && t.dueDate === activeDateStr);
+  const dayTasks = tasks.filter(t => isTaskOnDate(t, year, month, activeDay));
 
   // Hours: 08 AM to 08 PM
   const hours = Array.from({ length: 13 }).map((_, i) => {
@@ -477,10 +497,11 @@ function TimelineView({ tasks, viewDate, selectedDay, setSelectedDay }) {
                 className="flex flex-col items-center gap-3 relative shrink-0 min-w-[3rem]"
               >
                 <span className="text-[11px] sm:text-xs font-bold text-[var(--color-smoke)]">{DAYS_SHORT[d.getDay()][0]}</span>
-                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-sm font-bold transition-smooth ${isSelected ? 'bg-[var(--color-low-bg)] text-[var(--color-charcoal)] shadow-sm border border-[var(--color-low-dot)] scale-110' : 'bg-[var(--color-bg)] text-[var(--color-charcoal)] hover:bg-[var(--color-mist)]'}`}>
+                <div className={`w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center text-sm font-bold transition-smooth ${isSelected ? 'text-white shadow-sm scale-110' : 'bg-[var(--color-bg)] text-[var(--color-charcoal)] hover:bg-[var(--color-mist)]'}`}
+                     style={isSelected ? { backgroundColor: 'var(--color-primary)' } : {}}>
                   {d.getDate()}
                 </div>
-                {isSelected && <div className="absolute -bottom-6 w-8 h-1 rounded-full bg-[var(--color-low-dot)]" />}
+                {isSelected && <div className="absolute -bottom-6 w-8 h-1 rounded-full" style={{ backgroundColor: 'var(--color-primary)' }} />}
               </button>
             )
           })}
@@ -505,14 +526,16 @@ function TimelineView({ tasks, viewDate, selectedDay, setSelectedDay }) {
              <div className="flex flex-col gap-2 pl-16">
                 {dayTasks.filter(t => !t.dueTime).map(task => (
                   <div 
-                       key={task.id} 
-                       className="w-full rounded-full p-2.5 pl-4 flex items-center shadow-sm border"
-                       style={{ 
-                         backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
-                         borderColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-dot)`,
-                       }}
-                     >
-                        <span className="font-bold text-sm truncate" style={{ color: `var(--color-charcoal)` }}>{task.title}</span>
+                    key={task.id} 
+                    className="w-full rounded-full p-2.5 pl-4 pr-3 flex items-center justify-between shadow-sm border"
+                    style={{ 
+                      backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
+                      borderColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-dot)`,
+                    }}
+                  >
+                    <div className="flex items-center gap-2 truncate">
+                      <span className="font-bold text-sm truncate" style={{ color: `var(--color-charcoal)` }}>{task.title}</span>
+                    </div>
                   </div>
                 ))}
              </div>
@@ -543,13 +566,13 @@ function TimelineView({ tasks, viewDate, selectedDay, setSelectedDay }) {
                    return (
                      <div 
                        key={task.id} 
-                       className="w-full rounded-full p-1.5 pl-5 pr-1.5 flex items-center justify-between shadow-sm border hover:-translate-y-0.5 transition-transform cursor-pointer"
+                       className="w-full rounded-full p-1.5 pl-4 pr-1.5 flex items-center justify-between shadow-sm border hover:-translate-y-0.5 transition-transform cursor-pointer"
                        style={{ 
                          backgroundColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-bg)`,
                          borderColor: `var(--color-${task.priority === 'high' ? 'high' : task.priority === 'medium' ? 'medium' : 'low'}-dot)`,
                        }}
                      >
-                        <div className="flex items-center gap-3 truncate min-w-0">
+                        <div className="flex items-center gap-2 truncate min-w-0">
                           <span className="font-bold text-[13px] sm:text-sm truncate" style={{ color: `var(--color-charcoal)` }}>{task.title}</span>
                           {subtaskCount > 0 && (
                             <div className="w-5 h-5 rounded-full bg-white flex items-center justify-center text-[10px] font-bold shadow-sm shrink-0" style={{ color: `var(--color-charcoal)` }}>

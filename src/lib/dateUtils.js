@@ -1,6 +1,12 @@
+function normalizeTime(timeStr) {
+  if (!timeStr) return '00:00:00';
+  if (timeStr.length === 5) return `${timeStr}:00`;
+  return timeStr;
+}
+
 export function formatDateTime(dateStr, timeStr) {
   if (!dateStr) return '';
-  const d = new Date(`${dateStr}T${timeStr || '00:00:00'}`);
+  const d = new Date(`${dateStr}T${normalizeTime(timeStr)}`);
   const options = { month: 'short', day: 'numeric' };
   if (timeStr) {
     options.hour = 'numeric';
@@ -13,13 +19,13 @@ export function formatDateTime(dateStr, timeStr) {
 
 export function formatTimeOnly(timeStr) {
   if (!timeStr) return '';
-  const d = new Date(`1970-01-01T${timeStr}`);
+  const d = new Date(`1970-01-01T${normalizeTime(timeStr)}`);
   return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
 export function getTimeRemaining(dateStr, timeStr) {
   if (!dateStr || !timeStr) return null;
-  const target = new Date(`${dateStr}T${timeStr}`);
+  const target = new Date(`${dateStr}T${normalizeTime(timeStr)}`);
   const now = new Date();
   const diffMs = target - now;
   
@@ -52,10 +58,22 @@ export function getTimeRemaining(dateStr, timeStr) {
 
 export function isOverdue(dateStr, timeStr) {
   if (!dateStr) return false;
-  const target = new Date(`${dateStr}T${timeStr || '00:00:00'}`);
+  const target = new Date(`${dateStr}T${normalizeTime(timeStr)}`);
   const now = new Date();
   if (!timeStr) {
     target.setDate(target.getDate() + 1); // If no time, overdue next day
   }
   return target < now;
+}
+
+export function isOverdueMoreThanWeek(dateStr, timeStr) {
+  if (!dateStr) return false;
+  const target = new Date(`${dateStr}T${normalizeTime(timeStr)}`);
+  const now = new Date();
+  if (!timeStr) {
+    target.setDate(target.getDate() + 1);
+  }
+  const diffMs = now.getTime() - target.getTime();
+  // 7 days in milliseconds: 7 * 24 * 60 * 60 * 1000
+  return diffMs > 7 * 24 * 60 * 60 * 1000;
 }

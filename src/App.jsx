@@ -6,11 +6,9 @@ import './App.css';
 import AuthGuard from './components/auth/AuthGuard';
 import Layout from './components/layout/Layout';
 
-// Eagerly load the landing page and auth to ensure fast initial render
-import LandingPage from './pages/LandingPage';
-import LoginPage from './pages/LoginPage';
-
-// Lazy load the rest of the app to improve initial chunk size and LCP
+// Lazy load all pages to optimize initial bundle size, memory, and LCP
+const LandingPage = lazy(() => import('./pages/LandingPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
 const TasksPage = lazy(() => import('./pages/TasksPage'));
 const CalendarPage = lazy(() => import('./pages/CalendarPage'));
 const DashboardPage = lazy(() => import('./pages/DashboardPage'));
@@ -25,7 +23,18 @@ export default function App() {
     // Disable smooth scrolling and RAF loop on mobile to preserve performance
     if (window.matchMedia('(max-width: 768px)').matches) return;
 
-    const lenis = new Lenis();
+    const lenis = new Lenis({
+      prevent: (node) => {
+        return Boolean(
+          node.hasAttribute?.('data-lenis-prevent') ||
+          node.closest?.('[data-lenis-prevent]') ||
+          node.closest?.('.overflow-y-auto') ||
+          node.closest?.('.overflow-auto') ||
+          node.closest?.('.overflow-y-scroll') ||
+          node.closest?.('[role="dialog"]')
+        );
+      },
+    });
     let rafId;
 
     function raf(time) {

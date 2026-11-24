@@ -2,6 +2,7 @@
 import { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
 import { useAuth } from './AuthContext';
 import { useGamification } from './GamificationContext';
+import { isOverdueMoreThanWeek } from '../lib/dateUtils';
 import {
   getTasks as fetchTasks,
   addTask as createTask,
@@ -12,12 +13,19 @@ import {
 
 const TaskContext = createContext(null);
 
+// Helper for demo dates
+const getOffsetDateStr = (days) => {
+  const d = new Date();
+  d.setDate(d.getDate() + days);
+  return d.toLocaleDateString('en-CA');
+};
+
 // ─── Demo seed data (used when not authenticated / Firebase not configured) ───
 const DEMO_TASKS = [
   {
     id: 'demo-1',
     title: 'Redesign Landing Page',
-    dueDate: '2026-06-20',
+    dueDate: getOffsetDateStr(0), // Today
     priority: 'high',
     completed: false,
     subtasks: [
@@ -27,12 +35,12 @@ const DEMO_TASKS = [
       { id: 's4', title: 'Implement responsive layout', done: false },
       { id: 's5', title: 'Run usability testing', done: false },
     ],
-    createdAt: new Date('2026-06-10').toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: 'demo-2',
     title: 'Q3 Marketing Campaign',
-    dueDate: '2026-06-25',
+    dueDate: getOffsetDateStr(2),
     priority: 'medium',
     completed: false,
     subtasks: [
@@ -41,12 +49,12 @@ const DEMO_TASKS = [
       { id: 's8', title: 'Design ad creatives', done: true },
       { id: 's9', title: 'Set up analytics tracking', done: false },
     ],
-    createdAt: new Date('2026-06-11').toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: 'demo-3',
     title: 'Team Onboarding Docs',
-    dueDate: '2026-06-15',
+    dueDate: getOffsetDateStr(-1),
     priority: 'low',
     completed: true,
     subtasks: [
@@ -54,12 +62,12 @@ const DEMO_TASKS = [
       { id: 's11', title: 'Record welcome video', done: true },
       { id: 's12', title: 'Set up access credentials', done: true },
     ],
-    createdAt: new Date('2026-06-08').toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: 'demo-4',
     title: 'API Integration Sprint',
-    dueDate: '2026-06-10',
+    dueDate: getOffsetDateStr(1),
     priority: 'high',
     completed: false,
     subtasks: [
@@ -67,12 +75,12 @@ const DEMO_TASKS = [
       { id: 's14', title: 'Build authentication layer', done: true },
       { id: 's15', title: 'Write endpoint handlers', done: false },
     ],
-    createdAt: new Date('2026-06-05').toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: 'demo-5',
     title: 'Brand Style Guide',
-    dueDate: '2026-06-30',
+    dueDate: getOffsetDateStr(4),
     priority: 'medium',
     completed: false,
     subtasks: [
@@ -81,7 +89,7 @@ const DEMO_TASKS = [
       { id: 's18', title: 'Create logo variations', done: false },
       { id: 's19', title: 'Document component library', done: false },
     ],
-    createdAt: new Date('2026-06-12').toISOString(),
+    createdAt: new Date().toISOString(),
   },
   {
     id: 'demo-6',
@@ -141,14 +149,26 @@ export function TaskProvider({ children }) {
   const [tasksLoading, setTasksLoading] = useState(true);
   const completingTasks = useRef(new Set());
 
+  const autoCleanExpiredTasks = useCallback((taskList) => {
+    let hasChanges = false;
+    const cleaned = taskList.map(t => {
+      if (!t.completed && !t.deleted && isOverdueMoreThanWeek(t.dueDate, t.dueTime)) {
+        hasChanges = true;
+        return { ...t, deleted: true, deletedAt: new Date().toISOString(), autoArchived: true };
+      }
+      return t;
+    });
+    return { cleaned, hasChanges };
+  }, []);
+
   const loadTasks = useCallback(async () => {
     if (isDemoMode) {
       const saved = localStorage.getItem('taskflow-demo-tasks');
-      if (saved) {
-        setTasks(JSON.parse(saved));
-      } else {
-        setTasks(DEMO_TASKS);
-        localStorage.setItem('taskflow-demo-tasks', JSON.stringify(DEMO_TASKS));
+      const baseTasks = saved ? JSON.parse(saved) : DEMO_TASKS;
+      const { cleaned, hasChanges } = autoCleanExpiredTasks(baseTasks);
+      setTasks(cleaned);
+      if (hasChanges || !saved) {
+        localStorage.setItem('taskflow-demo-tasks', JSON.stringify(cleaned));
       }
       setTasksLoading(false);
       return;
@@ -161,24 +181,52 @@ export function TaskProvider({ children }) {
     setTasksLoading(true);
     try {
       const data = await fetchTasks(currentUser.uid);
-      setTasks(data); // If empty, it will be []
+      const { cleaned, hasChanges } = autoCleanExpiredTasks(data);
+      setTasks(cleaned);
+      if (hasChanges) {
+        cleaned.filter(t => t.autoArchived).forEach(t => {
+          modifyTask(t.id, { deleted: true, deletedAt: t.deletedAt }).catch(console.error);
+        });
+      }
     } catch (err) {
       console.error('Failed to load tasks:', err);
       setTasks([]); // Clean slate on error for authenticated users
     } finally {
       setTasksLoading(false);
     }
-  }, [currentUser]);
+  }, [currentUser, isDemoMode, autoCleanExpiredTasks]);
 
   useEffect(() => {
     loadTasks();
   }, [loadTasks]);
 
-  // ─── Daily Overdue Check ──────────────────────────────────────────────────────
+  // ─── Overdue Cleanup & Daily Check ──────────────────────────────────────────
   useEffect(() => {
-    if (tasksLoading || tasks.length === 0 || !gamification.profile) return;
-    const today = new Date().toISOString().split('T')[0];
-    
+    if (tasksLoading || tasks.length === 0) return;
+
+    // 1. Move tasks overdue for more than 7 days into Trash automatically
+    const expired = tasks.filter(t => !t.completed && !t.deleted && isOverdueMoreThanWeek(t.dueDate, t.dueTime));
+    if (expired.length > 0) {
+      setTasks(prev => {
+        const next = prev.map(t => {
+          if (!t.completed && !t.deleted && isOverdueMoreThanWeek(t.dueDate, t.dueTime)) {
+            return { ...t, deleted: true, deletedAt: new Date().toISOString() };
+          }
+          return t;
+        });
+        if (isDemoMode) localStorage.setItem('taskflow-demo-tasks', JSON.stringify(next));
+        return next;
+      });
+      if (currentUser && !isDemoMode) {
+        expired.forEach(t => {
+          modifyTask(t.id, { deleted: true, deletedAt: new Date().toISOString() }).catch(console.error);
+        });
+      }
+    }
+
+    // 2. Gamification Streak check
+    if (!gamification.profile) return;
+    const today = new Date().toLocaleDateString('en-CA');
     if (gamification.profile.lastCheckDate !== today) {
       const hasOverdue = tasks.some(t => t.dueDate && t.dueDate < today && !t.completed);
       if (hasOverdue) {
@@ -189,14 +237,14 @@ export function TaskProvider({ children }) {
       }
       gamification.setLastCheckDate(today);
     }
-  }, [tasks, tasksLoading, gamification]);
+  }, [tasks, tasksLoading, gamification, isDemoMode, currentUser]);
 
   // ─── Evaluate Gamification Completion ─────────────────────────────────────────
   const evaluateCompletion = useCallback((taskId) => {
     const task = tasks.find(t => t.id === taskId);
     if (!task) return;
     
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     if (!task.dueDate || task.dueDate >= today) {
       gamification.awardPoints(1);
       gamification.incrementStreak();

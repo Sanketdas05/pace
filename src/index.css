@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500&family=DM+Sans:ital,opsz,wght@0,9..40,400..500;1,9..40,400..500&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -35,6 +35,11 @@
     font-family: 'Inter', system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+
+  section[id] {
+    scroll-margin-top: 80px;
   }
 
   body {
@@ -45,15 +50,18 @@
     transition: background-color 0.3s ease, color 0.3s ease;
   }
 
+  /* Hide scrollbar globally across all browsers */
+  html, body {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
   ::-webkit-scrollbar {
-    width: 4px;
+    display: none;
+    width: 0;
+    height: 0;
   }
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
-  ::-webkit-scrollbar-thumb {
-    background: var(--color-mist);
-    border-radius: 8px;
+  * {
+    scrollbar-width: none;
   }
 }
 
@@ -104,6 +112,36 @@
 }
 
 @layer utilities {
+  .bg-brand {
+    background-color: #FF6B00;
+  }
+  .bg-brand-deep {
+    background-color: #D95500;
+  }
+  .text-brand {
+    color: #FF6B00;
+  }
+  .text-brand-deep {
+    color: #D95500;
+  }
+  .bg-bg {
+    background-color: #111111;
+  }
+  .bg-surface {
+    background-color: #1E1E1E;
+  }
+  .bg-surface-2 {
+    background-color: #262626;
+  }
+  .text-ink-2 {
+    color: #B5B5B5;
+  }
+  .text-ink-3 {
+    color: #757575;
+  }
+  .bg-cream {
+    background-color: #F4F0E4;
+  }
   .transition-smooth {
     transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }

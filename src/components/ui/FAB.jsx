@@ -10,12 +10,15 @@ export default function FAB({ onClick }) {
       whileTap={{ scale: 0.95 }}
       initial={{ scale: 0 }}
       animate={{ scale: 1 }}
-      className="fixed bottom-[14.5rem] right-5 lg:hidden z-30 w-14 h-14 text-white rounded-2xl shadow-fab flex items-center justify-center"
-      style={{ backgroundColor: 'var(--color-primary)' }}
+      className="fixed bottom-20 right-4 lg:hidden z-30 w-12 h-12 text-white rounded-2xl shadow-lg border border-white/20 flex items-center justify-center transition-transform"
+      style={{ 
+        backgroundColor: 'var(--color-btn-new-bg, var(--color-primary))',
+        color: 'var(--color-btn-new-text, #ffffff)'
+      }}
+      aria-label="Create new task"
+      title="Create new task"
     >
-      <Plus size={24} strokeWidth={2.5} />
-      {/* Optional ping effect */}
-      <span className="absolute inset-0 rounded-2xl animate-ping opacity-20" style={{ backgroundColor: 'var(--color-primary)' }} />
+      <Plus size={22} strokeWidth={2.5} />
     </motion.button>
   );
 }

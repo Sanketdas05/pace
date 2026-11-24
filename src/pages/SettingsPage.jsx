@@ -9,12 +9,13 @@ import { useReview } from '../context/ReviewContext';
 import { uploadAvatar } from '../lib/storage';
 import ThemeSelector from '../components/settings/ThemeSelector';
 import CustomThemeBuilder from '../components/settings/CustomThemeBuilder';
+import { useNotifications } from '../context/NotificationContext';
 
 export default function SettingsPage() {
-  const { currentUser, signOut, signInWithGoogle, isDemoMode, updateUserName } = useAuth();
+  const { currentUser, signOut, signInWithGoogle, isDemoMode, updateUserName, updateUserPhoto } = useAuth();
   const { tasks } = useTasks();
   const { profile } = useGamification();
-  const [notifications, setNotifications] = useState(true);
+  const { toastPopupsEnabled, setToastPopupsEnabled } = useNotifications();
   const [signingOut, setSigningOut] = useState(false);
   const [themesExpanded, setThemesExpanded] = useState(false);
   const [showGamificationInfo, setShowGamificationInfo] = useState(false);
@@ -54,73 +55,84 @@ export default function SettingsPage() {
   };
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-[var(--color-charcoal)]">Settings</h1>
-        <p className="text-[var(--color-smoke)] text-sm mt-1">Manage your account and preferences</p>
+    <div className="pb-36 sm:pb-28 md:pb-16 max-w-2xl mx-auto">
+      <div className="mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[var(--color-charcoal)] tracking-tight">Settings</h1>
+        <p className="text-[var(--color-smoke)] text-xs sm:text-sm mt-1">Manage your account and preferences</p>
       </div>
 
       {/* ── Profile Card ─────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        className="surface rounded-2xl shadow-card p-6 mb-4"
+        className="surface rounded-2xl shadow-card p-5 sm:p-6 mb-4"
       >
         <div className="flex items-center gap-4 mb-5">
-          <div className="relative">
+          <div className="relative shrink-0">
             {currentUser?.photoURL ? (
               <img
                 src={currentUser.photoURL}
                 alt="Profile"
-                className="w-16 h-16 rounded-2xl object-cover ring-2 ring-[var(--color-mist)]"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover ring-2 ring-[var(--color-mist)]"
               />
             ) : (
               <div
-                className="w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl ring-2 ring-[var(--color-mist)]"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center text-white font-bold text-xl sm:text-2xl ring-2 ring-[var(--color-mist)]"
                 style={{ backgroundColor: 'var(--color-primary)' }}
               >
                 {currentUser?.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'}
               </div>
             )}
             <div
-              className="absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-white"
+              className="absolute -bottom-1 -right-1 w-4 h-4 sm:w-5 sm:h-5 rounded-full border-2 border-white"
               style={{ backgroundColor: 'var(--color-low-dot)' }}
             />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <input
               type="text"
               value={displayNameInput}
               onChange={(e) => setDisplayNameInput(e.target.value)}
               onBlur={handleNameBlur}
               placeholder="Your Name"
-              className="font-bold text-[var(--color-charcoal)] text-lg bg-transparent border-b border-transparent hover:border-[var(--color-mist)] focus:border-[var(--color-primary)] focus:outline-none transition-smooth px-1 -ml-1 w-full max-w-[200px]"
+              className="font-bold text-[var(--color-charcoal)] text-base sm:text-lg bg-transparent border-b border-transparent hover:border-[var(--color-mist)] focus:border-[var(--color-primary)] focus:outline-none transition-smooth px-0.5 -ml-0.5 w-full max-w-[220px]"
             />
             {profile?.streak > 0 && (
-              <p className="text-[var(--color-primary)] font-bold text-xs uppercase tracking-wide mt-0.5 mb-1">
+              <p className="text-[var(--color-primary)] font-bold text-[11px] uppercase tracking-wide mt-0.5 mb-1">
                 {getUserTitle(profile.streak)}
               </p>
             )}
-            <p className="text-[var(--color-smoke)] text-sm">{currentUser?.email || 'Not signed in'}</p>
-            <p
-              className="text-xs font-medium mt-1"
-              style={{ color: isDemoMode ? 'var(--color-medium-dot)' : 'var(--color-low-dot)' }}
-            >
-              {isDemoMode ? '⚡ Demo Mode' : 'Google Account'}
-            </p>
+            <p className="text-[var(--color-smoke)] text-xs truncate">{currentUser?.email || 'Not signed in'}</p>
+            <div className="mt-1">
+              <span
+                className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-md"
+                style={{
+                  backgroundColor: isDemoMode ? 'var(--color-medium-bg, rgba(245, 158, 11, 0.12))' : 'var(--color-low-bg, rgba(16, 185, 129, 0.12))',
+                  color: isDemoMode ? 'var(--color-medium-dot, #d97706)' : 'var(--color-low-dot, #059669)'
+                }}
+              >
+                {isDemoMode ? '⚡ Demo Mode' : '✓ Google Account'}
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="mb-5">
-          <label className="text-xs font-bold text-[var(--color-smoke)] uppercase tracking-wider mb-2 block">Upload Profile Picture</label>
-          <div className="flex items-center gap-3">
+        <div className="mb-5 p-3 rounded-xl bg-[var(--color-bg)]/60 border border-[var(--color-mist)] flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-xs font-semibold text-[var(--color-charcoal)]">Profile Photo</p>
+            <p className="text-[11px] text-[var(--color-smoke)] mt-0.5">
+              {isDemoMode ? "Unavailable in Demo Mode" : "JPG, PNG or WebP · Max 5MB"}
+            </p>
+          </div>
+          <div className="shrink-0">
             <input
               type="file"
               accept="image/*"
               id="avatar-upload"
+              disabled={isDemoMode}
               className="hidden"
               onChange={async (e) => {
-                const file = e.target.files[0];
+                const file = e.target.files?.[0];
                 if (!file || !currentUser || isDemoMode) return;
                 
                 try {
@@ -133,26 +145,27 @@ export default function SettingsPage() {
               }}
             />
             <label
-              htmlFor="avatar-upload"
-              className="cursor-pointer px-4 py-2 bg-[var(--color-mist)] hover:bg-[var(--color-high-bg)] text-[var(--color-charcoal)] text-sm font-semibold rounded-lg transition-smooth border border-[var(--color-mist)]"
+              htmlFor={isDemoMode ? undefined : "avatar-upload"}
+              className={`inline-flex items-center justify-center px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-smooth whitespace-nowrap select-none ${
+                isDemoMode
+                  ? "bg-[var(--color-mist)]/50 text-[var(--color-smoke)] cursor-not-allowed opacity-60"
+                  : "cursor-pointer bg-[var(--color-mist)] hover:bg-[var(--color-mist)]/80 text-[var(--color-charcoal)] active:scale-95"
+              }`}
             >
               Choose Image
             </label>
-            <span className="text-xs text-[var(--color-smoke)]">
-              {isDemoMode ? "Unavailable in Demo Mode" : "Max size: 5MB"}
-            </span>
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
           {[
             { label: 'Total Tasks', value: total },
             { label: 'Completed', value: completed },
             { label: 'Completion', value: `${total > 0 ? Math.round((completed / total) * 100) : 0}%` },
           ].map(({ label, value }) => (
-            <div key={label} className="bg-[var(--color-bg)] rounded-xl p-3 text-center">
-              <p className="font-bold text-lg text-[var(--color-charcoal)]">{value}</p>
-              <p className="text-[10px] text-[var(--color-smoke)] mt-0.5">{label}</p>
+            <div key={label} className="bg-[var(--color-bg)] rounded-xl py-2.5 px-2 sm:p-3 text-center border border-[var(--color-mist)]/60">
+              <p className="font-bold text-base sm:text-lg text-[var(--color-charcoal)] leading-none">{value}</p>
+              <p className="text-[10px] sm:text-xs text-[var(--color-smoke)] font-medium mt-1 truncate">{label}</p>
             </div>
           ))}
         </div>
@@ -163,18 +176,19 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.03 }}
-        className="surface rounded-2xl shadow-card p-6 mb-4"
+        className="surface rounded-2xl shadow-card p-5 sm:p-6 mb-4"
       >
         <div className="flex items-center justify-between mb-4">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <h3 className="font-bold text-[var(--color-charcoal)] text-sm">Gamification Status</h3>
               <button
                 onClick={() => setShowGamificationInfo(true)}
-                className="text-[var(--color-smoke)] hover:text-[var(--color-primary)] transition-smooth"
+                className="text-[var(--color-smoke)] hover:text-[var(--color-primary)] p-0.5 rounded transition-smooth"
                 title="Gamification Rules"
+                aria-label="Gamification Rules"
               >
-                <Info size={16} />
+                <Info size={15} />
               </button>
             </div>
             <p className="text-xs text-[var(--color-smoke)] mt-0.5">Track your pace and consistency</p>
@@ -182,42 +196,39 @@ export default function SettingsPage() {
           <Shield size={20} style={{ color: profile.shields > 0 ? 'var(--color-primary)' : 'var(--color-smoke)' }} />
         </div>
 
-        <div className="grid grid-cols-4 gap-2 mb-4">
-          <div className="bg-[var(--color-bg)] rounded-xl p-3 text-center border border-[var(--color-mist)]">
-            <p className="font-bold text-lg text-[var(--color-primary)]">{profile.streak}🔥</p>
-            <p className="text-[10px] font-semibold text-[var(--color-smoke)] mt-0.5">DAY STREAK</p>
+        <div className="grid grid-cols-4 gap-1.5 sm:gap-2.5">
+          <div className="bg-[var(--color-bg)] rounded-xl py-2.5 px-1 sm:p-3 text-center border border-[var(--color-mist)]">
+            <p className="font-bold text-base sm:text-lg text-[var(--color-primary)] leading-tight flex items-center justify-center gap-0.5">
+              {profile.streak}<span className="text-sm">🔥</span>
+            </p>
+            <p className="text-[9px] sm:text-[10px] font-bold text-[var(--color-smoke)] mt-1 tracking-tight uppercase truncate">
+              Day Streak
+            </p>
           </div>
-          <div className="bg-[var(--color-bg)] rounded-xl p-3 text-center border border-[var(--color-mist)]">
-            <p className="font-bold text-lg text-[var(--color-charcoal)]">{profile.points}</p>
-            <p className="text-[10px] font-semibold text-[var(--color-smoke)] mt-0.5">POINTS</p>
+          <div className="bg-[var(--color-bg)] rounded-xl py-2.5 px-1 sm:p-3 text-center border border-[var(--color-mist)]">
+            <p className="font-bold text-base sm:text-lg text-[var(--color-charcoal)] leading-tight">
+              {profile.points}
+            </p>
+            <p className="text-[9px] sm:text-[10px] font-bold text-[var(--color-smoke)] mt-1 tracking-tight uppercase truncate">
+              Points
+            </p>
           </div>
-          <div className="bg-[var(--color-bg)] rounded-xl p-3 text-center border border-[var(--color-mist)]">
-            <p className="font-bold text-lg text-[var(--color-charcoal)]">{profile.flawlessDays}</p>
-            <p className="text-[10px] font-semibold text-[var(--color-smoke)] mt-0.5">FLAWLESS</p>
+          <div className="bg-[var(--color-bg)] rounded-xl py-2.5 px-1 sm:p-3 text-center border border-[var(--color-mist)]">
+            <p className="font-bold text-base sm:text-lg text-[var(--color-charcoal)] leading-tight">
+              {profile.flawlessDays}
+            </p>
+            <p className="text-[9px] sm:text-[10px] font-bold text-[var(--color-smoke)] mt-1 tracking-tight uppercase truncate">
+              Flawless
+            </p>
           </div>
-          <div className="bg-[var(--color-bg)] rounded-xl p-3 text-center border border-[var(--color-mist)]">
-            <p className="font-bold text-lg text-[var(--color-charcoal)]">{profile.shields}/3</p>
-            <p className="text-[10px] font-semibold text-[var(--color-smoke)] mt-0.5">SHIELDS</p>
+          <div className="bg-[var(--color-bg)] rounded-xl py-2.5 px-1 sm:p-3 text-center border border-[var(--color-mist)]">
+            <p className="font-bold text-base sm:text-lg text-[var(--color-charcoal)] leading-tight">
+              {profile.shields}/3
+            </p>
+            <p className="text-[9px] sm:text-[10px] font-bold text-[var(--color-smoke)] mt-1 tracking-tight uppercase truncate">
+              Shields
+            </p>
           </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-[var(--color-smoke)] uppercase tracking-wider mb-1.5">
-            Display Name
-          </label>
-          <input
-            type="text"
-            value={displayNameInput}
-            onChange={(e) => setDisplayNameInput(e.target.value)}
-            onBlur={handleNameBlur}
-            onKeyDown={(e) => e.key === 'Enter' && handleNameBlur()}
-            placeholder="e.g. John Doe"
-            className="w-full px-4 py-3 rounded-xl border border-[var(--color-mist)] bg-[var(--color-bg)] text-[var(--color-charcoal)] text-sm placeholder:text-[var(--color-smoke)]/60 focus:outline-none focus:border-forest/50 focus:ring-2 focus:ring-forest/10 transition-smooth"
-            style={{
-              borderColor: 'var(--color-mist)',
-            }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--color-primary)'}
-          />
         </div>
       </motion.div>
 
@@ -267,23 +278,30 @@ export default function SettingsPage() {
         transition={{ delay: 0.12 }}
         className="surface rounded-2xl shadow-card divide-y divide-[var(--color-mist)] mb-4"
       >
-        {/* Notifications */}
-        <div className="flex items-center justify-between p-5">
-          <div className="flex items-center gap-3">
-            <Bell size={18} style={{ color: 'var(--color-medium-dot)' }} />
-            <div>
-              <p className="text-sm font-medium text-[var(--color-charcoal)]">Notifications</p>
-              <p className="text-xs text-[var(--color-smoke)]">Due date reminders</p>
+        {/* In-App Deadline Popups */}
+        <div className="flex items-center justify-between p-4 sm:p-5 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[var(--color-medium-bg,rgba(245,158,11,0.12))] flex items-center justify-center shrink-0">
+              <Bell size={16} style={{ color: 'var(--color-medium-dot)' }} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-[var(--color-charcoal)]">In-App Pop-up Banners</p>
+              <p className="text-xs text-[var(--color-smoke)] line-clamp-2">
+                {toastPopupsEnabled 
+                  ? 'Showing brief alerts on deadlines' 
+                  : 'Calm mode — quiet badges, zero intrusive pop-ups (Recommended)'}
+              </p>
             </div>
           </div>
           <button
             id="notifications-toggle"
-            onClick={() => setNotifications(!notifications)}
-            className="relative w-12 h-6 rounded-full transition-smooth"
-            style={{ backgroundColor: notifications ? 'var(--color-primary)' : 'var(--color-mist)' }}
+            onClick={() => setToastPopupsEnabled(!toastPopupsEnabled)}
+            className="relative w-11 h-6 rounded-full transition-smooth shrink-0"
+            style={{ backgroundColor: toastPopupsEnabled ? 'var(--color-primary)' : 'var(--color-mist)' }}
+            aria-label="Toggle in-app banners"
           >
             <motion.div
-              animate={{ x: notifications ? 24 : 2 }}
+              animate={{ x: toastPopupsEnabled ? 22 : 2 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
               className="absolute top-1 w-4 h-4 bg-white rounded-full shadow"
             />
@@ -291,29 +309,32 @@ export default function SettingsPage() {
         </div>
 
         {/* Daily Review */}
-        <div className="flex items-center justify-between p-5">
-          <div className="flex items-center gap-3">
-            <BookOpen size={18} style={{ color: 'var(--color-primary)' }} />
-            <div>
-              <p className="text-sm font-medium text-[var(--color-charcoal)]">Evening Review Popup</p>
+        <div className="flex items-center justify-between p-4 sm:p-5 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-8 h-8 rounded-lg bg-[var(--color-primary)]/10 flex items-center justify-center shrink-0">
+              <BookOpen size={16} style={{ color: 'var(--color-primary)' }} />
+            </div>
+            <div className="min-w-0">
+              <p className="text-sm font-semibold text-[var(--color-charcoal)]">Evening Review Prompt</p>
               <p className="text-xs text-[var(--color-smoke)]">Auto-prompt at 8 PM daily</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setShowReviewModal(true)}
-              className="text-xs px-3 py-1.5 rounded-lg border border-[var(--color-mist)] text-[var(--color-smoke)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-smooth"
+              className="text-xs px-2.5 py-1.5 font-medium rounded-lg border border-[var(--color-mist)] text-[var(--color-smoke)] hover:border-[var(--color-primary)] hover:text-[var(--color-primary)] transition-smooth active:scale-95"
             >
               Open
             </button>
             <button
               id="review-popup-toggle"
               onClick={() => toggleAutoPopup(!autoPopupEnabled)}
-              className="relative w-12 h-6 rounded-full transition-smooth"
+              className="relative w-11 h-6 rounded-full transition-smooth shrink-0"
               style={{ backgroundColor: autoPopupEnabled ? 'var(--color-primary)' : 'var(--color-mist)' }}
+              aria-label="Toggle daily review popup"
             >
               <motion.div
-                animate={{ x: autoPopupEnabled ? 24 : 2 }}
+                animate={{ x: autoPopupEnabled ? 22 : 2 }}
                 transition={{ type: 'spring', stiffness: 400, damping: 25 }}
                 className="absolute top-1 w-4 h-4 bg-white rounded-full shadow"
               />
@@ -322,11 +343,13 @@ export default function SettingsPage() {
         </div>
 
         {/* Privacy */}
-        <div className="flex items-center gap-3 p-5">
-          <Shield size={18} className="text-[var(--color-smoke)]" />
-          <div className="flex-1">
-            <p className="text-sm font-medium text-[var(--color-charcoal)]">Privacy</p>
-            <p className="text-xs text-[var(--color-smoke)]">Your data is stored securely</p>
+        <div className="flex items-center gap-3 p-4 sm:p-5">
+          <div className="w-8 h-8 rounded-lg bg-[var(--color-mist)]/60 flex items-center justify-center shrink-0">
+            <Shield size={16} className="text-[var(--color-smoke)]" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-semibold text-[var(--color-charcoal)]">Privacy & Security</p>
+            <p className="text-xs text-[var(--color-smoke)]">Your data is stored securely in Firebase & local encrypted storage</p>
           </div>
         </div>
       </motion.div>
@@ -336,7 +359,7 @@ export default function SettingsPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.18 }}
-        className="surface rounded-2xl shadow-card p-5"
+        className="surface rounded-2xl shadow-card p-4 sm:p-5 mb-8"
       >
         {currentUser ? (
           <motion.button

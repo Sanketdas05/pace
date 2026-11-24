@@ -25,6 +25,16 @@ const DEMO_USER = {
   isDemo: true,
 };
 
+const getDemoUser = () => {
+  const savedName = localStorage.getItem('taskflow-demo-name');
+  const savedPhoto = localStorage.getItem('taskflow-demo-photo');
+  return {
+    ...DEMO_USER,
+    displayName: savedName || DEMO_USER.displayName,
+    photoURL: savedPhoto || DEMO_USER.photoURL,
+  };
+};
+
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -36,7 +46,7 @@ export function AuthProvider({ children }) {
     // Check if demo mode was previously activated
     const demo = localStorage.getItem('taskflow-demo') === 'true';
     if (demo) {
-      setCurrentUser(DEMO_USER);
+      setCurrentUser(getDemoUser());
       setIsDemoMode(true);
       setAuthLoading(false);
       return;
@@ -114,12 +124,15 @@ export function AuthProvider({ children }) {
 
   const updateUserName = async (name) => {
     if (!currentUser) return;
+    if (isDemoMode || currentUser.isDemo) {
+      localStorage.setItem('taskflow-demo-name', name);
+      setCurrentUser((prev) => ({ ...prev, displayName: name }));
+      return;
+    }
     try {
       await updateProfile(currentUser, { displayName: name });
-      setCurrentUser({ ...currentUser, displayName: name });
-      if (!isDemoMode) {
-        await updateUserProfile(currentUser.uid, { displayName: name });
-      }
+      setCurrentUser((prev) => ({ ...prev, displayName: name }));
+      await updateUserProfile(currentUser.uid, { displayName: name });
     } catch (err) {
       console.error('Update name error:', err);
       throw err;
@@ -128,22 +141,24 @@ export function AuthProvider({ children }) {
 
   const updateUserPhoto = async (photoUrl) => {
     if (!currentUser) return;
+    if (isDemoMode || currentUser.isDemo) {
+      localStorage.setItem('taskflow-demo-photo', photoUrl);
+      setCurrentUser((prev) => ({ ...prev, photoURL: photoUrl }));
+      return;
+    }
     try {
       await updateProfile(currentUser, { photoURL: photoUrl });
-      setCurrentUser({ ...currentUser, photoURL: photoUrl });
-      if (!isDemoMode) {
-        await updateUserProfile(currentUser.uid, { photoURL: photoUrl });
-      }
+      setCurrentUser((prev) => ({ ...prev, photoURL: photoUrl }));
+      await updateUserProfile(currentUser.uid, { photoURL: photoUrl });
     } catch (err) {
       console.error('Update photo error:', err);
       throw err;
     }
   };
 
-
   const enterDemoMode = () => {
     localStorage.setItem('taskflow-demo', 'true');
-    setCurrentUser(DEMO_USER);
+    setCurrentUser(getDemoUser());
     setIsDemoMode(true);
   };
 

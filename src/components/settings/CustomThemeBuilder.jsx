@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Palette, ChevronDown, Check, RotateCcw, AlertTriangle, Sparkles, Save, Trash2 } from 'lucide-react';
-import { CUSTOM_THEME_FIELDS, DEFAULT_CUSTOM_THEME } from '../../lib/themes';
+import { CUSTOM_THEME_FIELDS, DEFAULT_CUSTOM_THEME, buildFullThemeVars } from '../../lib/themes';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../../lib/firestore';
@@ -203,11 +203,13 @@ Return ONLY valid JSON format with these 9 keys. No markdown blocks, no explanat
       const content = data.choices?.[0]?.message?.content || "{}";
       const newColors = parseAIJsonResponse(content);
       
-      Object.keys(newColors).forEach(k => {
-         handleChange(k, newColors[k]);
-      });
+      const fullTheme = buildFullThemeVars(newColors);
+      setLocalVars(fullTheme.vars);
+      saveAndApplyCustom(fullTheme);
 
       setAiPrompt('');
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
       
       // Save rate limit stats
       if (currentUser && !isDemoMode) {

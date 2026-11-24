@@ -174,23 +174,24 @@ export default function CreateTaskModal({ onClose }) {
         className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
       >
         <div
-          className="w-full max-w-md surface rounded-3xl shadow-modal pointer-events-auto overflow-hidden"
+          data-lenis-prevent
+          className="w-full max-w-md surface rounded-3xl shadow-modal pointer-events-auto overflow-hidden max-h-[90vh] flex flex-col"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Step indicator */}
-          <div className="flex items-center gap-2 px-6 pt-5 pb-0">
+          <div className="flex items-center gap-2 px-6 pt-5 pb-0 flex-shrink-0">
             {[1, 2].map((s) => (
               <div
                 key={s}
                 className={`h-1 flex-1 rounded-full transition-all duration-300 ${
-                  s <= step ? 'bg-forest' : 'bg-[var(--color-mist)]'
+                  s <= step ? 'bg-[var(--color-primary)]' : 'bg-[var(--color-mist)]'
                 }`}
               />
             ))}
           </div>
 
           {/* Header */}
-          <div className="flex items-center justify-between px-6 py-4">
+          <div className="flex items-center justify-between px-6 py-4 flex-shrink-0">
             <div>
               <h2 className="text-base font-bold text-[var(--color-charcoal)]">
                 {step === 1 ? 'New Task' : 'Add Subtasks'}
@@ -207,7 +208,7 @@ export default function CreateTaskModal({ onClose }) {
             </button>
           </div>
 
-          <div className="px-6 pb-6">
+          <div data-lenis-prevent className="px-6 pb-6 overflow-y-auto flex-1 overscroll-contain">
             <AnimatePresence mode="wait">
               {/* ── STEP 1 ── */}
               {step === 1 && (
@@ -232,7 +233,7 @@ export default function CreateTaskModal({ onClose }) {
                       onChange={(e) => setTitle(e.target.value)}
                       onKeyDown={(e) => e.key === 'Enter' && handleStep1Next()}
                       placeholder="e.g. Redesign landing page..."
-                      className="w-full px-4 py-3 rounded-xl border border-[var(--color-mist)] bg-[var(--color-bg)] text-[var(--color-charcoal)] text-sm placeholder:text-[var(--color-smoke)]/60 focus:outline-none focus:border-forest/50 focus:ring-2 focus:ring-forest/10 transition-smooth"
+                      className="w-full px-4 py-3 rounded-xl border border-[var(--color-mist)] bg-[var(--color-bg)] text-[var(--color-charcoal)] text-sm placeholder:text-[var(--color-smoke)]/60 focus:outline-none focus:border-[var(--color-primary)]/50 focus:ring-2 focus:ring-[var(--color-primary)]/10 transition-smooth"
                     />
                   </div>
 
@@ -475,11 +476,11 @@ export default function CreateTaskModal({ onClose }) {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleSelectMethod('manual')}
-                        className="w-full p-4 rounded-2xl border-2 border-[var(--color-mist)] hover:border-forest/40 hover:bg-forest/5 transition-smooth text-left group"
+                        className="w-full p-4 rounded-2xl border-2 border-[var(--color-mist)] hover:border-[var(--color-primary)]/40 hover:bg-[var(--color-primary)]/5 transition-smooth text-left group"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-forest/10 group-hover:bg-forest/15 rounded-xl flex items-center justify-center transition-smooth">
-                            <Plus size={20} className="text-forest" />
+                          <div className="w-10 h-10 bg-[var(--color-primary)]/10 group-hover:bg-[var(--color-primary)]/15 rounded-xl flex items-center justify-center transition-smooth">
+                            <Plus size={20} style={{ color: 'var(--color-primary)' }} />
                           </div>
                           <div>
                             <p className="font-semibold text-sm text-[var(--color-charcoal)]">Manual Entry</p>
@@ -494,11 +495,11 @@ export default function CreateTaskModal({ onClose }) {
                         whileHover={{ scale: 1.01 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => handleSelectMethod('ai')}
-                        className="w-full p-4 rounded-2xl border-2 border-[var(--color-mist)] hover:border-sage/60 hover:bg-sage/5 transition-smooth text-left group"
+                        className="w-full p-4 rounded-2xl border-2 border-[var(--color-mist)] hover:border-[var(--color-primary)]/60 hover:bg-[var(--color-primary)]/5 transition-smooth text-left group"
                       >
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 bg-sage/15 group-hover:bg-sage/25 rounded-xl flex items-center justify-center transition-smooth">
-                            <Sparkles size={20} className="text-sage" />
+                          <div className="w-10 h-10 bg-[var(--color-primary)]/10 group-hover:bg-[var(--color-primary)]/20 rounded-xl flex items-center justify-center transition-smooth">
+                            <Sparkles size={20} style={{ color: 'var(--color-primary)' }} />
                           </div>
                           <div>
                             <p className="font-semibold text-sm text-[var(--color-charcoal)]">AI Generated</p>
@@ -521,7 +522,7 @@ export default function CreateTaskModal({ onClose }) {
                       {subtaskMethod === 'ai' && aiLoading && (
                         <div className="space-y-2.5 mb-5">
                           <p className="text-xs text-[var(--color-smoke)] mb-3 flex items-center gap-2">
-                            <Sparkles size={13} className="text-sage animate-pulse" /> Generating subtasks…
+                            <Sparkles size={13} style={{ color: 'var(--color-primary)' }} className="animate-pulse" /> Generating subtasks…
                           </p>
                           {[...Array(4)].map((_, i) => (
                             <div key={i} className="flex items-center gap-3">
@@ -575,7 +576,7 @@ export default function CreateTaskModal({ onClose }) {
                             onKeyDown={(e) => e.key === 'Enter' && addManualSubtask()}
                             placeholder="Add a subtask…"
                             autoFocus
-                            className="flex-1 px-3 py-2.5 rounded-xl border border-[var(--color-mist)] bg-[var(--color-bg)] text-sm text-[var(--color-charcoal)] placeholder:text-[var(--color-smoke)]/60 focus:outline-none focus:border-forest/50 transition-smooth"
+                            className="flex-1 px-3 py-2.5 rounded-xl border border-[var(--color-mist)] bg-[var(--color-bg)] text-sm text-[var(--color-charcoal)] placeholder:text-[var(--color-smoke)]/60 focus:outline-none focus:border-[var(--color-primary)]/50 transition-smooth"
                           />
                           <button
                             onClick={addManualSubtask}
@@ -598,7 +599,7 @@ export default function CreateTaskModal({ onClose }) {
                           type="submit"
                           id="create-task-btn"
                           onClick={handleCreate}
-                          disabled={!title.trim() || (!dueDate && !(['daily', 'workout', 'groceries'].includes(category) && repeatDays.length > 0)) || aiLoading}
+                          disabled={!title.trim() || aiLoading}
                           className="flex-1 py-2.5 text-white text-sm font-semibold rounded-xl hover:opacity-90 transition-smooth disabled:opacity-50"
                           style={{ backgroundColor: 'var(--color-primary)' }}
                         >

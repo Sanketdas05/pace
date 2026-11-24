@@ -3,8 +3,8 @@ service cloud.firestore {
   match /databases/{database}/documents {
     // Tasks collection
     match /tasks/{taskId} {
-      // Anyone who is logged in can create a task
-      allow create: if request.auth != null;
+      // Anyone who is logged in can create their own task
+      allow create: if request.auth != null && request.resource.data.userId == request.auth.uid;
       
       // Allow reading if the user is the owner or a member
       allow read: if request.auth != null && (
@@ -12,8 +12,8 @@ service cloud.firestore {
         request.auth.uid in resource.data.members
       );
       
-      // Allow updating if user is owner, member, or if they are joining a team task (only appending their UID)
-      allow update: if request.auth != null && (
+      // Allow updating if user is owner, member, or if they are joining a team task (preserves ownership)
+      allow update: if request.auth != null && request.resource.data.userId == resource.data.userId && (
         resource.data.userId == request.auth.uid || 
         request.auth.uid in resource.data.members ||
         (resource.data.type == 'team' && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['members']) && request.resource.data.members.hasAll([request.auth.uid]))

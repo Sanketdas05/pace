@@ -114,12 +114,24 @@ export default function TaskCard({ task }) {
             </div>
           </div>
 
-          {/* Circular progress */}
-          {total > 0 && (
-            <div className="flex-shrink-0">
+          {/* Header Actions: Circular progress & Delete */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            {total > 0 && (
               <CircularProgress done={done} total={total} />
-            </div>
-          )}
+            )}
+            {!task.deleted && (
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                className="w-7 h-7 flex items-center justify-center rounded-lg transition-smooth bg-[var(--color-bg)]/80 backdrop-blur-sm border border-[var(--color-mist)] text-[var(--color-smoke)] hover:text-[var(--color-high-dot)] hover:border-[var(--color-high-dot)] opacity-70 group-hover:opacity-100"
+                onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(true); }}
+                title="Delete task"
+                aria-label="Delete task"
+              >
+                <Trash2 size={13} />
+              </motion.button>
+            )}
+          </div>
         </div>
 
         {/* Subtasks toggle */}
@@ -266,8 +278,8 @@ export default function TaskCard({ task }) {
         </div>
       </div>
 
-      {/* Delete / Restore Actions */}
-      {task.deleted ? (
+      {/* Restore / Delete Actions for deleted tasks */}
+      {task.deleted && (
         <div className="absolute top-0 right-0 bottom-0 flex flex-col justify-center gap-2 px-3 bg-gradient-to-l from-[var(--color-bg)] via-[var(--color-bg)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             onClick={(e) => { e.stopPropagation(); restoreTask(task.id); }}
@@ -282,17 +294,6 @@ export default function TaskCard({ task }) {
             <Trash2 size={14} /> Delete
           </button>
         </div>
-      ) : (
-        <motion.button
-          className="absolute top-3 right-3 opacity-100 w-7 h-7 flex items-center justify-center rounded-lg transition-smooth bg-[var(--color-bg)]/80 backdrop-blur-sm border border-[var(--color-mist)]"
-          style={{ color: 'var(--color-smoke)' }}
-          onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--color-high-dot)'; e.currentTarget.style.borderColor = 'var(--color-high-dot)'; }}
-          onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--color-smoke)'; e.currentTarget.style.borderColor = 'var(--color-mist)'; }}
-          onClick={(e) => { e.stopPropagation(); setShowDeleteConfirm(true); }}
-          title="Delete task"
-        >
-          <Trash2 size={13} />
-        </motion.button>
       )}
 
       {/* Inline Confirmation Card */}

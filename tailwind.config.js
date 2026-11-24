@@ -8,7 +8,14 @@ export default {
   theme: {
     extend: {
       colors: {
-        cream: '#F9F8F6',
+        bg: '#111111',
+        surface: '#1E1E1E',
+        'surface-2': '#262626',
+        'ink-2': '#B5B5B5',
+        'ink-3': '#757575',
+        brand: '#FF6B00',
+        'brand-deep': '#D95500',
+        cream: '#F4F0E4',
         forest: {
           DEFAULT: '#2C4C3B',
           light: '#3D6B53',
@@ -34,7 +41,8 @@ export default {
         smoke: '#6B6B6B',
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        display: ['"Bricolage Grotesque"', 'sans-serif'],
+        sans: ['"DM Sans"', 'Inter', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         '2xl': '1rem',
