@@ -1,0 +1,28 @@
+# Pace Productivity
+
+> Defining the speed of life. A gamified task manager, habit tracker, and real-time collaboration workspace.
+
+## Overview
+Pace (available at https://pace-manager.web.app/) is a modern productivity application built to help individuals, students, and teams organize tasks, sustain habits, and build momentum.
+
+## Core Features
+- **Gamified Consistency System**: Earn points for completing tasks, build daily streaks, achieve Flawless Days (completing all tasks due on that day), and earn Streak Shields (1 shield per 3 flawless days, max 3 shields) to protect streaks when life happens.
+- **Natural Language AI Assistant**: Generate and refine tasks, subtasks, timelines, and themes using conversational language.
+- **Visual Scheduling**: Month calendar grid and interactive hourly timeline view. Habits and recurring tasks do not clutter calendar days.
+- **Study & Reading Tracker**: Dedicated progress cards for books and learning modules with item incrementing and page completion percentage.
+- **Real-time Team Collaboration**: Multi-member tasks with live in-task messaging and member assignment.
+- **Offline-First PWA**: Progressive Web App capabilities for instant offline access and automatic synchronization upon reconnecting.
+- **Aesthetic Custom Themes**: Pre-built themes (Modern, Snowwy, Pookie, Cyberpunk, Forest) plus an interactive custom theme generator.
+
+## Technical Details
+- **Platform**: Progressive Web App (PWA) compatible with Web, iOS, Android, macOS, and Windows.
+- **Hosting**: Firebase Hosting (`pace-manager.web.app`).
+- **Database**: Cloud Firestore with offline local persistence.
+- **Authentication**: Firebase Authentication with Google Sign-in, email/password, and instant Demo Mode.
+- **Pricing**: 100% Free to use.
+
+## Canonical URLs
+- Homepage: https://pace-manager.web.app/
+- Login / Sign up: https://pace-manager.web.app/login
+- Terms of Service: https://pace-manager.web.app/terms
+- Privacy Policy: https://pace-manager.web.app/privacy

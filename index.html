@@ -2,12 +2,27 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/jpeg" href="/favicon.jpg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#ffffff" />
-    <link rel="apple-touch-icon" href="/pwa-192x192.png" />
+    <meta name="theme-color" content="#121614" />
     
-    <link rel="canonical" href="https://pace-manager.web.app/" />
+    <link id="canonical-url" rel="canonical" href="https://pace-manager.web.app/" />
+    <script>
+      (function() {
+        try {
+          var canon = document.getElementById('canonical-url');
+          if (canon) {
+            var origin = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+              ? window.location.origin
+              : 'https://pace-manager.web.app';
+            var path = window.location.pathname.replace(/\/+$/, '') || '/';
+            canon.setAttribute('href', origin + (path === '/' ? '/' : path));
+          }
+        } catch (e) {}
+      })();
+    </script>
 
     <!-- Primary Meta Tags -->
     <title>Pace | Gamified Task Manager &amp; Habit Tracker</title>
@@ -18,35 +33,96 @@
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Pace" />
     <meta property="og:url" content="https://pace-manager.web.app/" />
-    <meta property="og:title" content="Pace | Gamified Task Manager & Habit Tracker" />
-    <meta property="og:description" content="A premium, gamified task management experience. Track your habits, collaborate in real-time, generate smart tasks using AI, and build unstoppable momentum with beautiful design." />
+    <meta property="og:title" content="Pace | Gamified Task Manager &amp; Habit Tracker" />
+    <meta property="og:description" content="A premium, gamified task management experience. Track habits, build streaks, collaborate in real-time, generate smart tasks using AI, and define the speed of your life." />
+    <meta property="og:image" content="https://pace-manager.web.app/pwa-512x512.png" />
+    <meta property="og:image:width" content="512" />
+    <meta property="og:image:height" content="512" />
+    <meta property="og:image:alt" content="Pace Productivity Brand Logo" />
     
     <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:card" content="summary" />
     <meta property="twitter:url" content="https://pace-manager.web.app/" />
-    <meta property="twitter:title" content="Pace | Gamified Task Manager & Habit Tracker" />
-    <meta property="twitter:description" content="A premium, gamified task management experience. Track your habits, collaborate in real-time, generate smart tasks using AI, and build unstoppable momentum with beautiful design." />
+    <meta property="twitter:title" content="Pace | Gamified Task Manager &amp; Habit Tracker" />
+    <meta property="twitter:description" content="A premium, gamified task management experience. Track habits, build streaks, collaborate in real-time, generate smart tasks using AI, and define the speed of your life." />
+    <meta property="twitter:image" content="https://pace-manager.web.app/pwa-512x512.png" />
 
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#1A1A1A" />
-
-    <!-- JSON-LD Schema Markup -->
+    <!-- AIEO & Structured Data (Schema.org) for Generative Search (ChatGPT, Perplexity, Gemini, Claude) -->
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "WebApplication",
-        "name": "Pace Productivity",
-        "url": "https://pace-manager.web.app/",
-        "description": "A premium, gamified task management experience and habit tracker featuring real-time collaboration and AI integration, designed to help you build unstoppable momentum.",
-        "applicationCategory": "ProductivityApplication",
-        "operatingSystem": "All",
-        "offers": {
-          "@type": "Offer",
-          "price": "0",
-          "priceCurrency": "USD"
+      [
+        {
+          "@context": "https://schema.org",
+          "@type": "WebApplication",
+          "name": "Pace",
+          "alternateName": ["Pace Manager", "Pace Productivity", "Pace App"],
+          "url": "https://pace-manager.web.app/",
+          "description": "A premium, gamified task management experience and habit tracker featuring real-time collaboration and AI integration, designed to help you build unstoppable momentum.",
+          "applicationCategory": "ProductivityApplication",
+          "operatingSystem": "Web, Android, iOS, Windows, macOS",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "softwareVersion": "2.0.0",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Gamified Streak Tracking and Streak Shields",
+            "Natural Language AI Task & Subtask Generator",
+            "Visual Calendar and Timeline Scheduling",
+            "Real-time Team Collaboration and In-Task Chat",
+            "Interactive Study and Reading Progress Trackers",
+            "Progressive Web App (PWA) with Offline-first Support",
+            "Aesthetic Theme Switcher (Modern, Snowwy, Pookie, Forest, Cyberpunk)"
+          ],
+          "creator": {
+            "@type": "Organization",
+            "name": "Pace Productivity",
+            "url": "https://pace-manager.web.app/",
+            "logo": "https://pace-manager.web.app/pwa-512x512.png"
+          }
+        },
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is Pace?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Pace is a modern, gamified task manager and habit tracker that turns daily productivity into a game with day streaks, flawlessness points, streak shields, real-time collaboration, and AI task generation."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does gamification work in Pace?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Completing tasks earns points and builds your daily streak. Completing all scheduled tasks in a day awards a Flawless Day. Every 3 Flawless Days grant you a Streak Shield, which automatically protects your streak if you miss a day."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Is Pace free to use?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Pace is completely free to use with all core features included: task management, habit tracking, calendar, timeline scheduling, and team collaboration."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "Does Pace work offline?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Yes, Pace is built as an offline-first Progressive Web App (PWA) with local data caching and instant sync when you reconnect."
+              }
+            }
+          ]
         }
-      }
+      ]
     </script>
     <style>
       .seo-content { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }

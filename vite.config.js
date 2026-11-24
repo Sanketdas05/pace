@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
       VitePWA({
         registerType: 'autoUpdate',
         injectRegister: 'auto',
-        includeAssets: ['favicon.jpg', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-512x512-maskable.png'],
+        includeAssets: ['favicon.svg', 'favicon.png', 'apple-touch-icon.png', 'pwa-192x192.png', 'pwa-512x512.png', 'pwa-512x512-maskable.png'],
         workbox: {
           navigateFallbackDenylist: [/^\/__/]
         },
@@ -19,8 +19,8 @@ export default defineConfig(({ mode }) => {
           name: 'Pace Manager',
           short_name: 'Pace',
           description: 'Define the speed of life with Pace Manager',
-          theme_color: '#ffffff',
-          background_color: '#ffffff',
+          theme_color: '#121614',
+          background_color: '#121614',
           display: 'standalone',
           icons: [
             {
