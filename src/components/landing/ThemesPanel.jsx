@@ -59,7 +59,7 @@ export default function ThemesPanel({ className = '' }) {
         color: 'var(--lp-light-text, #111111)',
         transition: 'background-color 0.4s ease, color 0.4s ease',
       }}
-      className={`relative z-20 w-full rounded-t-[28px] md:rounded-t-[40px] -mt-12 md:-mt-14 lg:-mt-16 pt-32 md:pt-40 lg:pt-48 pb-20 md:pb-28 ${className}`}
+      className={`relative z-20 w-full rounded-t-[28px] md:rounded-t-[40px] -mt-20 md:-mt-24 lg:-mt-28 pt-28 md:pt-36 lg:pt-44 pb-20 md:pb-28 ${className}`}
     >
       {/* Notch at top center */}
       <div className="absolute -top-px left-1/2 -translate-x-1/2 z-30">

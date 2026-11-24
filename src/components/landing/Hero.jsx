@@ -51,7 +51,7 @@ export default function Hero() {
   return (
     <section 
       ref={heroRef}
-      className="relative z-10 w-full overflow-hidden pt-8 md:pt-12 lg:pt-14 pb-14 md:pb-16 lg:pb-20 min-h-[calc(100vh-80px)] flex flex-col justify-between"
+      className="relative z-10 w-full overflow-hidden pt-8 md:pt-12 lg:pt-14 pb-6 md:pb-8 lg:pb-10 min-h-[calc(100vh-80px)] flex flex-col justify-between"
       aria-label="Pace hero introduction"
     >
       <div className="max-w-[1440px] mx-auto pl-6 sm:pl-8 pr-6 sm:pr-8 lg:pr-0 w-full my-auto">
