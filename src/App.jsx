@@ -17,6 +17,7 @@ const JoinTaskPage = lazy(() => import('./pages/JoinTaskPage'));
 const TaskDetailsPage = lazy(() => import('./pages/TaskDetailsPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 export default function App() {
   useEffect(() => {
@@ -116,7 +117,7 @@ export default function App() {
             </AuthGuard>
           }
         />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
   );
