@@ -8,7 +8,7 @@ import { useAI } from '../../context/AIContext';
 import { useTheme } from '../../context/ThemeContext';
 import { useGamification } from '../../context/GamificationContext';
 import { buildFullThemeVars } from '../../lib/themes';
-import { GROQ_URL, isDev, DEFAULT_AI_MODEL } from '../../config/ai';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL, getAIHeaders } from '../../config/ai';
 
 const QUICK_PROMPTS = [
   'Plan my day',
@@ -384,10 +384,7 @@ export default function AIAssistant() {
         tool_choice: "auto",
       };
 
-      const headers = { 'Content-Type': 'application/json' };
-      if (!isDev) {
-        headers['Authorization'] = `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`;
-      }
+      const headers = getAIHeaders();
 
       const res = await fetch(GROQ_URL, {
         method: 'POST',

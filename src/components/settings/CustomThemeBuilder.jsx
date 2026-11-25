@@ -5,7 +5,7 @@ import { CUSTOM_THEME_FIELDS, DEFAULT_CUSTOM_THEME, buildFullThemeVars } from '.
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
 import { getUserProfile, updateUserProfile } from '../../lib/firestore';
-import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse } from '../../config/ai';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse, getAIHeaders } from '../../config/ai';
 
 const groups = [...new Set(CUSTOM_THEME_FIELDS.map((f) => f.group))];
 
@@ -186,10 +186,7 @@ Return ONLY valid JSON format with these 9 keys. No markdown blocks, no explanat
         response_format: { type: "json_object" }
       };
 
-      const headers = { 'Content-Type': 'application/json' };
-      if (!isDev) {
-        headers['Authorization'] = `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`;
-      }
+      const headers = getAIHeaders();
 
       const res = await fetch(GROQ_URL, {
         method: 'POST',

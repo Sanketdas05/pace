@@ -4,7 +4,7 @@ import { X, Check, Plus, Trash2, Sparkles, User, Users } from 'lucide-react';
 import { useTasks } from '../../context/TaskContext';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse } from '../../config/ai';
+import { GROQ_URL, isDev, DEFAULT_AI_MODEL, parseAIJsonResponse, getAIHeaders } from '../../config/ai';
 
 const priorityOptions = [
   { value: 'high', label: 'High', color: 'bg-[var(--color-high-bg)] text-[var(--color-high-dot)] border-[var(--color-high-bg)]', dot: 'bg-[var(--color-high-dot)]' },
@@ -49,10 +49,7 @@ export default function EditTaskModal({ task, onClose }) {
     if (!title.trim()) return;
     setAiLoading(true);
     try {
-      const headers = { 'Content-Type': 'application/json' };
-      if (!isDev) {
-        headers['Authorization'] = `Bearer ${import.meta.env.VITE_GROQ_API_KEY}`;
-      }
+      const headers = getAIHeaders();
       
       const res = await fetch(GROQ_URL, {
         method: 'POST',

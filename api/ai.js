@@ -1,8 +1,8 @@
 // api/ai.js
-// Vercel Serverless Function to securely proxy AI completions without exposing API keys.
+// Vercel Serverless Function to securely proxy AI completions without exposing API keys to the browser.
 
 export default async function handler(req, res) {
-  // CORS headers
+  // CORS headers for cross-origin frontend requests
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
@@ -24,17 +24,28 @@ export default async function handler(req, res) {
   try {
     const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: 'Server missing GROQ_API_KEY environment variable in Vercel.' });
+      return res.status(500).json({ 
+        error: 'Missing GROQ_API_KEY in Vercel environment variables. Add it in Vercel Project Settings > Environment Variables.' 
+      });
     }
 
-    const { model, messages, tools, tool_choice, temperature, max_tokens, response_format } = req.body || {};
+    let body = req.body;
+    if (typeof body === 'string') {
+      try {
+        body = JSON.parse(body);
+      } catch {
+        return res.status(400).json({ error: 'Invalid JSON body.' });
+      }
+    }
+
+    const { model, messages, tools, tool_choice, temperature, max_tokens, response_format } = body || {};
 
     if (!messages || !Array.isArray(messages)) {
       return res.status(400).json({ error: "Missing required 'messages' array in request body." });
     }
 
     const payload = {
-      model: model || 'openai/gpt-oss-120b',
+      model: model || process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
       messages,
       temperature: typeof temperature === 'number' ? temperature : 0.6,
     };
