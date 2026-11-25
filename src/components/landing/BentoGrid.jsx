@@ -541,7 +541,7 @@ export default function BentoGrid({ className = '', showAllTools = false, onTogg
         </div>
 
         {/* Expandable "Explore all tools" trigger */}
-        <div className="mt-16 pt-10 border-t border-black/10 flex flex-col items-center text-center">
+        <div id="bento-tools-trigger" className="mt-16 pt-10 border-t border-black/10 flex flex-col items-center text-center">
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <button
               type="button"
@@ -559,13 +559,6 @@ export default function BentoGrid({ className = '', showAllTools = false, onTogg
                 className={`transition-transform duration-300 ${showAllTools ? 'rotate-180' : ''}`} 
               />
             </button>
-
-            <Link
-              to="/features"
-              className="text-xs text-ink-3 hover:text-black font-medium underline underline-offset-4 transition-colors"
-            >
-              or open standalone /features page &rarr;
-            </Link>
           </div>
           
           <p className="text-xs text-[#666666] mt-3 max-w-md">

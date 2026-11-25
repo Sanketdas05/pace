@@ -23,7 +23,7 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
         color: 'var(--lp-dark-text, #FFFFFF)',
         transition: 'background-color 0.4s ease, color 0.4s ease',
       }}
-      className={`relative z-20 w-full py-24 md:py-32 border-t border-white/[0.06] ${className}`}
+      className={`relative z-20 w-full rounded-t-[32px] md:rounded-t-[48px] -mt-8 md:-mt-12 pt-24 md:pt-32 pb-24 md:pb-32 border-t border-white/[0.08] shadow-[0_-25px_60px_rgba(0,0,0,0.4)] ${className}`}
     >
       <div className="max-w-[1440px] mx-auto px-6 sm:px-8">
         

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import PaceLogo from './PaceLogo';
 
-export default function Footer({ className = '' }) {
+export default function Footer({ className = '', onExploreTools = null }) {
   return (
     <footer 
       role="contentinfo"
@@ -43,12 +43,16 @@ export default function Footer({ className = '' }) {
               <span>Try Pace Free</span>
               <ArrowRight size={16} className="ml-2" />
             </Link>
-            <a
-              href="#features"
-              className="w-full sm:w-auto h-14 px-8 rounded-full bg-black/15 border border-white/20 text-white font-medium text-base hover:bg-black/25 transition-colors duration-150 inline-flex items-center justify-center"
+            <button
+              type="button"
+              onClick={onExploreTools || (() => {
+                const el = document.getElementById('features') || document.getElementById('bento-tools-trigger');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              })}
+              className="w-full sm:w-auto h-14 px-8 rounded-full bg-black/15 border border-white/20 text-white font-medium text-base hover:bg-black/25 transition-colors duration-150 inline-flex items-center justify-center cursor-pointer"
             >
               <span>Explore All Tools</span>
-            </a>
+            </button>
           </div>
         </div>
 
@@ -68,7 +72,18 @@ export default function Footer({ className = '' }) {
           <div className="flex flex-wrap items-center justify-center gap-6 text-white/90">
             <a href="#themes" className="hover:text-white transition-colors">Themes</a>
             <a href="#ecosystem" className="hover:text-white transition-colors">Ecosystem</a>
-            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a 
+              href="#features" 
+              onClick={(e) => {
+                if (onExploreTools) {
+                  e.preventDefault();
+                  onExploreTools();
+                }
+              }}
+              className="hover:text-white transition-colors cursor-pointer"
+            >
+              Features
+            </a>
             <a href="#bento" className="hover:text-white transition-colors">Capabilities</a>
             <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
             <Link to="/terms" className="hover:text-white transition-colors">Terms</Link>
