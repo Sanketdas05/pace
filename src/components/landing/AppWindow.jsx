@@ -22,22 +22,15 @@ export default function AppWindow({ className = '', isBento = false }) {
         {!isBento && (
           <>
             <style>{`
-              @media (min-width: 768px), (orientation: landscape) {
-                .app-window-card {
-                  --window-mask: linear-gradient(to bottom, #000 0%, #000 50%, rgba(0,0,0,0.85) 68%, rgba(0,0,0,0.3) 85%, transparent 100%);
-                }
-              }
-              @media (max-width: 767px) and (orientation: portrait) {
-                .app-window-card {
-                  --window-mask: none;
-                }
+              .app-window-card {
+                --window-mask: linear-gradient(to bottom, #000 0%, #000 52%, rgba(0,0,0,0.85) 72%, rgba(0,0,0,0.3) 88%, transparent 100%);
               }
             `}</style>
-            {/* Smooth bottom gradient overlay on desktop and landscape mobile */}
+            {/* Smooth bottom gradient overlay to blend into hero section on all viewports */}
             <div 
-              className="hidden md:block landscape:block absolute inset-x-0 bottom-0 h-44 pointer-events-none z-20 transition-opacity duration-400"
+              className="absolute inset-x-0 bottom-0 h-32 md:h-44 pointer-events-none z-20 transition-opacity duration-400"
               style={{
-                background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.3) 40%, var(--lp-hero-bg) 95%)',
+                background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.25) 40%, var(--lp-hero-bg) 95%)',
               }}
             />
           </>
