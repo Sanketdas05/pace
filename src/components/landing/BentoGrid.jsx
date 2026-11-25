@@ -563,8 +563,8 @@ export default function BentoGrid({ className = '', showAllTools = false, onTogg
           
           <p className="text-xs text-[#666666] mt-3 max-w-md">
             {showAllTools 
-              ? 'Viewing all 6 granular tool specs and modal workflows below.' 
-              : 'Deep dive into task modals, AI prompt parameters, collaboration threads, and theme studio.'}
+              ? 'Viewing all 6 granular tool specs, rate limits, and modal workflows below.' 
+              : 'Deep dive into task modals, AI prompt rate limits (+10 streak bonus), collaboration threads, and theme studio.'}
           </p>
         </div>
 

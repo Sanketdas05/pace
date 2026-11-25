@@ -259,7 +259,7 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
                 Pace AI & Slash Commands
               </h3>
               <p className="text-sm text-ink-2 leading-relaxed mb-6">
-                Type <code style={{ color: 'var(--lp-accent, #FF6B00)' }}>/</code> in the AI drawer to trigger instant command popups: create tasks, update statuses, or prompt Groq to plan your day.
+                Type <code style={{ color: 'var(--lp-accent, #FF6B00)' }}>/</code> to trigger instant command popups. Includes a smart daily rate limiter (25 base prompts/day) with a consistency reward — maintain a 3+ day streak to unlock <span className="text-white font-medium">+10 bonus prompts</span> (35/day).
               </p>
             </div>
 
@@ -271,8 +271,13 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
                     ✦
                   </div>
                   <span className="text-xs font-bold">Pace AI</span>
+                  <span className="px-1.5 py-0.5 rounded bg-black/5 text-[9px] font-mono text-ink-3">
+                    22/25 left
+                  </span>
                 </div>
-                <span className="text-[10px] font-mono text-ink-3">2 tasks in context</span>
+                <span className="text-[10px] font-mono font-semibold" style={{ color: 'var(--lp-accent, #FF6B00)' }}>
+                  🔥 Streak: +10 Bonus
+                </span>
               </div>
 
               {/* Slash Command Dropdown */}
