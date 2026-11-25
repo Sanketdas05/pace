@@ -6,7 +6,6 @@ import { LANDING_THEMES } from '../config/landingThemes';
 import Nav from '../components/landing/Nav';
 import Hero from '../components/landing/Hero';
 import ThemesPanel from '../components/landing/ThemesPanel';
-import WhatItOffers from '../components/landing/WhatItOffers';
 import OctopusFlowchart from '../components/landing/OctopusFlowchart';
 import BentoGrid from '../components/landing/BentoGrid';
 import FaqSection from '../components/landing/FaqSection';
@@ -98,7 +97,6 @@ export default function LandingPage() {
         <Hero />
         <ThemesPanel />
         <OctopusFlowchart />
-        <WhatItOffers />
         <BentoGrid />
         <FaqSection />
       </main>

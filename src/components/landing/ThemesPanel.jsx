@@ -74,19 +74,19 @@ export default function ThemesPanel({ className = '' }) {
             className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono font-medium mb-4"
             style={{ backgroundColor: 'var(--lp-light-pill-bg, rgba(0,0,0,0.05))', color: 'var(--lp-light-muted, #757575)' }}
           >
-            <span>THE PROBLEM</span>
+            <span>AESTHETIC & THEMES</span>
           </div>
           <h2 
             className="font-display font-medium text-[clamp(32px,4vw,56px)] leading-tight tracking-tight mb-3"
             style={{ color: 'var(--lp-light-text, #111111)' }}
           >
-            Less planning. More doing.
+            Four moods. One streak.
           </h2>
           <p 
             className="text-base md:text-lg font-normal leading-relaxed"
             style={{ color: 'var(--lp-light-muted, #5A5A5A)' }}
           >
-            A visual story around task overload and fragmented workflows. Choose from four crafted looks, or design your own custom theme with AI — your space, your rules.
+            Work feels different in daylight, late nights, and deep sprints. Switch themes anytime without losing a day — or prompt the built-in AI studio to build your custom palette.
           </p>
         </div>
 
@@ -251,7 +251,7 @@ export default function ThemesPanel({ className = '' }) {
                   color: 'var(--lp-light-bg, #FAF7F0)',
                 }}
               >
-                <span>Launch Theme Studio</span>
+                <span>Try Pace Free</span>
                 <span aria-hidden="true">&rarr;</span>
               </Link>
             </div>

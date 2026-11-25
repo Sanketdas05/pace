@@ -16,27 +16,27 @@ const lifecycleStages = [
   {
     id: "stage-1",
     stage: "01",
-    title: "Instant Ingestion",
-    category: "Command Parser",
-    desc: "Type /task, /update, or natural text. Keystrokes are parsed instantly into typed task records.",
+    title: "Natural Input",
+    category: "Capture",
+    desc: "Type or dictate tasks in plain language with automatic date and priority detection.",
     icon: Terminal,
     side: "left",
   },
   {
     id: "stage-2",
     stage: "02",
-    title: "AI Deconstruction",
-    category: "Groq Reasoning",
-    desc: "Complex goals are automatically converted into 3–5 bite-sized, executable subtasks.",
+    title: "AI Breakdown",
+    category: "Deconstruction",
+    desc: "Complex goals break into 3–5 bite-sized, executable subtasks automatically.",
     icon: Sparkles,
     side: "left",
   },
   {
     id: "stage-3",
     stage: "03",
-    title: "Timeline Slotting",
-    category: "Schedule Engine",
-    desc: "Allocates deliverables directly into your hour-by-hour day planner between 8 AM and evening.",
+    title: "Daily Flow",
+    category: "Scheduling",
+    desc: "Slots deliverables directly into your hour-by-hour day planner.",
     icon: Calendar,
     side: "left",
   },
@@ -44,44 +44,44 @@ const lifecycleStages = [
     id: "stage-4",
     stage: "04",
     title: "Team Delegation",
-    category: "Shared State",
-    desc: "Generates one-click invite links so teammates can join and collaborate in real-time.",
+    category: "Collaboration",
+    desc: "Share task links so collaborators join and sync in real-time.",
     icon: Share2,
     side: "left",
   },
   {
     id: "stage-5",
     stage: "05",
-    title: "Live Task Inboxes",
+    title: "Live Task Threads",
     category: "Multiplayer",
-    desc: "In-task comment threads stream updates and notes directly between collaborators.",
+    desc: "In-task comment streams keep context directly attached to work.",
     icon: Users,
     side: "right",
   },
   {
     id: "stage-6",
     stage: "06",
-    title: "Local-First SQLite",
-    category: "Offline Cache",
-    desc: "Check off tasks on airplanes or trains. State commits locally first and syncs in background.",
+    title: "Persistent Offline Cache",
+    category: "Offline-First",
+    desc: "Work on airplanes or offline. Changes persist locally and sync when back online.",
     icon: Database,
     side: "right",
   },
   {
     id: "stage-7",
     stage: "07",
-    title: "Velocity Compounding",
-    category: "Analytics Engine",
-    desc: "Live completion calculations continuously adjust your progress bars and priority rates.",
+    title: "Streaks & Velocity",
+    category: "Momentum",
+    desc: "Earn shields, protect check-off streaks, and level up daily consistency.",
     icon: BarChart2,
     side: "right",
   },
   {
     id: "stage-8",
     stage: "08",
-    title: "Evening Feedback Loop",
-    category: "Daily Closure",
-    desc: "3-question reflection locks in wins and automatically feeds tomorrow's #1 morning priority.",
+    title: "Daily Review",
+    category: "Reflection",
+    desc: "Lock in wins and set tomorrow's priority before closing your day.",
     icon: Compass,
     side: "right",
   }
@@ -209,15 +209,15 @@ export default function OctopusFlowchart({ className = '' }) {
                   }}
                 >
                   <span className="w-2 h-2 rounded-full" style={{ backgroundColor: 'var(--lp-accent, #FF6B00)' }} />
-                  <span>PACE REACTIVE HUB</span>
+                  <span>PACE ARCHITECTURE</span>
                 </div>
 
                 <h3 className="font-display font-medium text-2xl text-white tracking-tight mb-2">
-                  Unified State Bus
+                  Reactive Sync Hub
                 </h3>
 
                 <p className="text-xs text-ink-2 leading-relaxed mb-5">
-                  Coordinates keyboard inputs, Groq prompt streaming, real-time team inboxes, and offline SQLite synchronization in a zero-lag event stream.
+                  Synchronizes inputs, team updates, and offline local cache in one continuous flow.
                 </p>
 
                 {/* Core Live Architecture Metrics */}
@@ -226,15 +226,15 @@ export default function OctopusFlowchart({ className = '' }) {
                     className="p-2.5 rounded-xl border border-white/[0.06]"
                     style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #12261A)' }}
                   >
-                    <div className="text-[10px] text-ink-3 font-mono">EVENT LATENCY</div>
-                    <div className="text-sm font-mono font-semibold text-white mt-0.5">&lt; 12ms</div>
+                    <div className="text-[10px] text-ink-3 font-mono">SYNC ENGINE</div>
+                    <div className="text-sm font-mono font-semibold text-white mt-0.5">Real-Time</div>
                   </div>
                   <div 
                     className="p-2.5 rounded-xl border border-white/[0.06]"
                     style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #12261A)' }}
                   >
                     <div className="text-[10px] text-ink-3 font-mono">STORAGE</div>
-                    <div className="text-sm font-mono font-semibold mt-0.5" style={{ color: 'var(--lp-accent, #FF6B00)' }}>Local SQLite</div>
+                    <div className="text-sm font-mono font-semibold mt-0.5" style={{ color: 'var(--lp-accent, #FF6B00)' }}>Persistent Cache</div>
                   </div>
                 </div>
 

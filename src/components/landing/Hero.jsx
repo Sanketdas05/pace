@@ -97,10 +97,10 @@ export default function Hero() {
 
               {/* Secondary: Text link with 1px underline and slide-in arrow */}
               <a
-                href="#features"
+                href="#ecosystem"
                 onClick={(e) => {
                   e.preventDefault();
-                  const el = document.getElementById('features');
+                  const el = document.getElementById('ecosystem');
                   if (el) {
                     const top = el.getBoundingClientRect().top + window.pageYOffset - 80;
                     window.scrollTo({ top, behavior: 'smooth' });

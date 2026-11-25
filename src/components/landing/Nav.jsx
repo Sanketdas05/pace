@@ -17,10 +17,9 @@ export default function Nav() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  // Section links on the landing page
+  // Section links on the landing page (matches exact scroll sequence)
   const navLinks = [
     { label: 'Themes', href: '#themes' },
-    { label: 'Features', href: '#features' },
     { label: 'Ecosystem', href: '#ecosystem' },
     { label: 'Capabilities', href: '#bento' },
     { label: 'FAQ', href: '#faq' },

@@ -41,7 +41,7 @@ const slides = [
     features: [
       { icon: User, text: 'Real-time multiplayer task inboxes' },
       { icon: Mail, text: 'In-task team chat & shared notes' },
-      { icon: BarChart2, text: 'Local SQLite offline sync' },
+      { icon: BarChart2, text: 'Offline-first local sync' },
     ]
   }
 ];

@@ -444,7 +444,7 @@ export default function BentoGrid({ className = '' }) {
                 Installable PWA
               </h3>
               <p className="text-xs md:text-sm leading-relaxed" style={{ color: 'var(--lp-light-muted, #555555)' }}>
-                Access Pace in a dedicated desktop or mobile window with offline SQLite persistence and zero app store friction.
+                Access Pace in a dedicated desktop or mobile window with offline persistence and zero app store friction.
               </p>
             </div>
 
@@ -518,14 +518,14 @@ export default function BentoGrid({ className = '' }) {
 
             </div>
 
-            {/* Offline SQLite Status Badge */}
+            {/* Persistent Offline Cache Status Badge */}
             <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-[#141416] border border-white/[0.06] text-xs">
               <div className="flex items-center gap-2">
                 <span 
                   className="w-2 h-2 rounded-full" 
                   style={{ backgroundColor: 'var(--lp-accent, #FF6B00)' }}
                 />
-                <span className="text-ink-2 text-[11px]">Offline SQLite Engine</span>
+                <span className="text-ink-2 text-[11px]">Persistent Offline Cache</span>
               </div>
               <span 
                 className="font-mono text-[10px]"
