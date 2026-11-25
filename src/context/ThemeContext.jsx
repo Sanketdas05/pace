@@ -8,7 +8,7 @@ const STORAGE_KEY = 'taskflow-theme-id';
 const CUSTOM_STORAGE_KEY = 'taskflow-custom-theme';
 
 export function ThemeProvider({ children }) {
-  const [activeThemeId, setActiveThemeId] = useState('genz');
+  const [activeThemeId, setActiveThemeId] = useState('modern');
   const [customTheme, setCustomTheme] = useState(() => {
     try {
       const saved = localStorage.getItem(CUSTOM_STORAGE_KEY);
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
 
   // On mount — restore saved theme
   useEffect(() => {
-    const savedId = localStorage.getItem(STORAGE_KEY) || 'genz';
+    const savedId = localStorage.getItem(STORAGE_KEY) || 'modern';
     setActiveThemeId(savedId);
     const theme = savedId === 'custom'
       ? (() => {
@@ -27,12 +27,12 @@ export function ThemeProvider({ children }) {
             return c ? JSON.parse(c) : DEFAULT_CUSTOM_THEME;
           } catch { return DEFAULT_CUSTOM_THEME; }
         })()
-      : THEMES[savedId] || THEMES.genz;
+      : THEMES[savedId] || THEMES.modern;
     applyTheme(theme);
   }, []);
 
   const setTheme = (themeId) => {
-    const theme = themeId === 'custom' ? customTheme : THEMES[themeId] || THEMES.genz;
+    const theme = themeId === 'custom' ? customTheme : THEMES[themeId] || THEMES.modern;
     setActiveThemeId(themeId);
     localStorage.setItem(STORAGE_KEY, themeId);
     applyTheme(theme);
