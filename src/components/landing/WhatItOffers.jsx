@@ -54,8 +54,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 1: Step 1 of 2 — Task Details (From Screenshot) */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -155,8 +155,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 2: Step 2 of 2 — AI Subtasks (From Screenshot) */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -237,8 +237,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 3: Contextual AI & Slash Commands */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -311,8 +311,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 4: Shared Team Tasks & Task Inbox */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -381,8 +381,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 5: Daily Evening Review */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -444,8 +444,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
           {/* Function 6: Custom Theme Studio & AI Generator */}
           <div 
             style={{ 
-              backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-              borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+              backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+              borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
             }}
             className="border rounded-3xl p-7 flex flex-col justify-between hover:border-white/20 transition-all duration-200"
           >
@@ -472,7 +472,7 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
 
             {/* UI Mockup of Theme Builder */}
             <div 
-              style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #12261A)' }}
+              style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #151518)' }}
               className="text-white rounded-2xl p-4 border border-white/[0.08] space-y-2.5"
             >
               <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
@@ -482,7 +482,7 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
 
               {/* Prompt bar */}
               <div 
-                style={{ backgroundColor: 'var(--lp-dark-card-bg, #183323)' }}
+                style={{ backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)' }}
                 className="flex items-center gap-1.5 p-1 rounded-xl border border-white/10 text-[10px]"
               >
                 <span className="flex-1 px-2 text-ink-3 truncate">e.g. Cyberpunk neon pink...</span>
@@ -496,7 +496,7 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
 
               {/* Live Preview Bar */}
               <div 
-                style={{ backgroundColor: 'var(--lp-dark-bg, #0E2317)' }}
+                style={{ backgroundColor: 'var(--lp-dark-bg, #121214)' }}
                 className="p-2 rounded-xl border border-white/[0.06] flex items-center gap-1.5"
               >
                 <span className="w-1.5 h-6 rounded-full bg-[#FF4136]" />
@@ -530,8 +530,8 @@ export default function WhatItOffers({ className = '', onCollapse = null }) {
         {/* Bottom CTA Pill & Collapse Trigger */}
         <div 
           style={{ 
-            backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
-            borderColor: 'var(--lp-dark-card-border, rgba(255,255,255,0.08))' 
+            backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)', 
+            borderColor: 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))' 
           }}
           className="flex flex-col sm:flex-row items-center justify-between p-6 sm:p-8 rounded-3xl border gap-4"
         >

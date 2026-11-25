@@ -2,13 +2,27 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { useTheme } from '../context/ThemeContext';
+import { LANDING_THEMES, getLandingThemeVars } from '../config/landingThemes';
 import WhatItOffers from '../components/landing/WhatItOffers';
 import PaceLogo from '../components/landing/PaceLogo';
 import Footer from '../components/landing/Footer';
 
 export default function FeaturesPage() {
+  const { activeThemeId } = useTheme();
+  const theme = LANDING_THEMES[activeThemeId] || LANDING_THEMES.modern;
+  const themeVars = getLandingThemeVars(theme);
+
   return (
-    <div className="min-h-screen bg-[#0E1312] text-white flex flex-col justify-between selection:bg-[#FF6B00]/30 overflow-x-hidden font-sans">
+    <div 
+      style={{
+        ...themeVars,
+        backgroundColor: theme.heroBg,
+        color: theme.heroText,
+        transition: 'background-color 0.4s ease, color 0.4s ease',
+      }}
+      className="min-h-screen flex flex-col justify-between selection:bg-[#FF6B00]/30 overflow-x-hidden font-sans"
+    >
       {/* Top Header */}
       <header className="w-full max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
         <Link to="/" className="group">

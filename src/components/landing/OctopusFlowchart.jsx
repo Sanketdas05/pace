@@ -146,8 +146,8 @@ export default function OctopusFlowchart({ className = '' }) {
                     onMouseEnter={() => setActiveStage(stage.id)}
                     onMouseLeave={() => setActiveStage(null)}
                     style={{
-                      backgroundColor: isHovered ? 'var(--lp-dark-card-hover-bg, #1E3F2C)' : 'var(--lp-dark-card-bg, #183323)',
-                      borderColor: isHovered ? 'var(--lp-accent, #FF6B00)' : 'var(--lp-dark-card-border, rgba(255,255,255,0.06))',
+                      backgroundColor: isHovered ? 'var(--lp-dark-card-hover-bg, #24242A)' : 'var(--lp-dark-card-bg, #1C1C20)',
+                      borderColor: isHovered ? 'var(--lp-accent, #FF6B00)' : 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))',
                     }}
                     className={`p-4 md:p-5 rounded-2xl border transition-all duration-200 cursor-pointer ${isHovered
                         ? 'shadow-lg -translate-x-1'
@@ -187,7 +187,7 @@ export default function OctopusFlowchart({ className = '' }) {
               <div 
                 className="relative w-full max-w-[340px] p-7 rounded-3xl border-2 text-center shadow-xl"
                 style={{ 
-                  backgroundColor: 'var(--lp-dark-card-bg, #183323)',
+                  backgroundColor: 'var(--lp-dark-card-bg, #1C1C20)',
                   borderColor: 'var(--lp-accent, #FF6B00)' 
                 }}
               >
@@ -224,14 +224,14 @@ export default function OctopusFlowchart({ className = '' }) {
                 <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/[0.06] text-left">
                   <div 
                     className="p-2.5 rounded-xl border border-white/[0.06]"
-                    style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #12261A)' }}
+                    style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #151518)' }}
                   >
                     <div className="text-[10px] text-ink-3 font-mono">SYNC ENGINE</div>
                     <div className="text-sm font-mono font-semibold text-white mt-0.5">Real-Time</div>
                   </div>
                   <div 
                     className="p-2.5 rounded-xl border border-white/[0.06]"
-                    style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #12261A)' }}
+                    style={{ backgroundColor: 'var(--lp-dark-mockup-bg, #151518)' }}
                   >
                     <div className="text-[10px] text-ink-3 font-mono">STORAGE</div>
                     <div className="text-sm font-mono font-semibold mt-0.5" style={{ color: 'var(--lp-accent, #FF6B00)' }}>Persistent Cache</div>
@@ -255,8 +255,8 @@ export default function OctopusFlowchart({ className = '' }) {
                     onMouseEnter={() => setActiveStage(stage.id)}
                     onMouseLeave={() => setActiveStage(null)}
                     style={{
-                      backgroundColor: isHovered ? 'var(--lp-dark-card-hover-bg, #1E3F2C)' : 'var(--lp-dark-card-bg, #183323)',
-                      borderColor: isHovered ? 'var(--lp-accent, #FF6B00)' : 'var(--lp-dark-card-border, rgba(255,255,255,0.06))',
+                      backgroundColor: isHovered ? 'var(--lp-dark-card-hover-bg, #24242A)' : 'var(--lp-dark-card-bg, #1C1C20)',
+                      borderColor: isHovered ? 'var(--lp-accent, #FF6B00)' : 'var(--lp-dark-card-border, rgba(255, 107, 0, 0.18))',
                     }}
                     className={`p-4 md:p-5 rounded-2xl border transition-all duration-200 cursor-pointer ${isHovered
                         ? 'shadow-lg translate-x-1'
