@@ -392,14 +392,23 @@ export default function AIAssistant() {
         body: JSON.stringify(body),
       });
 
-      const data = await res.json();
+      const contentType = res.headers.get('content-type') || '';
+      let data = {};
+      if (contentType.includes('application/json')) {
+        data = await res.json();
+      } else {
+        const text = await res.text();
+        if (!res.ok) {
+          throw new Error(`AI Service Error (${res.status}): Please ensure VITE_AI_PROXY_URL is set in your build.`);
+        }
+      }
 
       // Catch the exact error Groq sends back
       if (!res.ok) {
         if (res.status === 429) {
           throw new Error("Rate limit exceeded. Please wait 60 seconds and try again.");
         }
-        throw new Error(data.error?.message || "Failed to connect to AI.");
+        throw new Error(data.error?.message || `Failed to connect to AI (status ${res.status}).`);
       }
 
       let reply = data.choices?.[0]?.message?.content || "";
