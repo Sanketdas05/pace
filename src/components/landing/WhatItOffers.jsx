@@ -8,11 +8,12 @@ import {
   Terminal, 
   ArrowRight, 
   ListPlus,
-  SlidersHorizontal
+  SlidersHorizontal,
+  ChevronUp
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function WhatItOffers({ className = '' }) {
+export default function WhatItOffers({ className = '', onCollapse = null }) {
   return (
     <section 
       id="features"
@@ -526,7 +527,7 @@ export default function WhatItOffers({ className = '' }) {
 
         </div>
 
-        {/* Bottom CTA Pill */}
+        {/* Bottom CTA Pill & Collapse Trigger */}
         <div 
           style={{ 
             backgroundColor: 'var(--lp-dark-card-bg, #183323)', 
@@ -541,18 +542,30 @@ export default function WhatItOffers({ className = '' }) {
               <div className="text-xs text-ink-3">Start with zero setup or sign up for instant team collaboration</div>
             </div>
           </div>
-          <Link
-            to="/login"
-            style={{
-              backgroundColor: 'var(--lp-accent, #FF6B00)',
-              color: 'var(--lp-accent-text, #111111)',
-              transition: 'background-color 0.4s ease, color 0.4s ease',
-            }}
-            className="w-full sm:w-auto h-11 px-6 rounded-full text-sm font-medium hover:opacity-90 flex items-center justify-center gap-2 shadow-sm flex-shrink-0"
-          >
-            <span>Launch Workspace</span>
-            <ArrowRight size={15} />
-          </Link>
+          <div className="flex items-center gap-3 w-full sm:w-auto">
+            {onCollapse && (
+              <button
+                type="button"
+                onClick={onCollapse}
+                className="w-full sm:w-auto h-11 px-5 rounded-full text-xs font-semibold bg-white/10 hover:bg-white/15 text-white transition-all flex items-center justify-center gap-1.5 border border-white/10 cursor-pointer"
+              >
+                <span>Hide detailed tools</span>
+                <ChevronUp size={14} />
+              </button>
+            )}
+            <Link
+              to="/login"
+              style={{
+                backgroundColor: 'var(--lp-accent, #FF6B00)',
+                color: 'var(--lp-accent-text, #111111)',
+                transition: 'background-color 0.4s ease, color 0.4s ease',
+              }}
+              className="w-full sm:w-auto h-11 px-6 rounded-full text-sm font-medium hover:opacity-90 flex items-center justify-center gap-2 shadow-sm flex-shrink-0"
+            >
+              <span>Try Pace Free</span>
+              <ArrowRight size={15} />
+            </Link>
+          </div>
         </div>
 
       </div>

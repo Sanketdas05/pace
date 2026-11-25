@@ -17,6 +17,7 @@ const JoinTaskPage = lazy(() => import('./pages/JoinTaskPage'));
 const TaskDetailsPage = lazy(() => import('./pages/TaskDetailsPage'));
 const TermsPage = lazy(() => import('./pages/TermsPage'));
 const PrivacyPage = lazy(() => import('./pages/PrivacyPage'));
+const FeaturesPage = lazy(() => import('./pages/FeaturesPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
 export default function App() {
@@ -57,6 +58,7 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/terms" element={<TermsPage />} />
         <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/features" element={<FeaturesPage />} />
         <Route
           path="/tasks"
           element={

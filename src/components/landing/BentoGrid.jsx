@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckSquare, BarChart2, Calendar, Smartphone, Download, CheckCircle2, Laptop, Wifi } from 'lucide-react';
+import { CheckSquare, BarChart2, Calendar, Smartphone, Download, CheckCircle2, Laptop, Wifi, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import AppWindow from './AppWindow';
 
-export default function BentoGrid({ className = '' }) {
+export default function BentoGrid({ className = '', showAllTools = false, onToggleTools = () => {} }) {
   const [calendarView, setCalendarView] = useState('Month');
 
   return (
@@ -537,6 +538,41 @@ export default function BentoGrid({ className = '' }) {
 
           </div>
 
+        </div>
+
+        {/* Expandable "Explore all tools" trigger */}
+        <div className="mt-16 pt-10 border-t border-black/10 flex flex-col items-center text-center">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <button
+              type="button"
+              onClick={() => onToggleTools(!showAllTools)}
+              className="group inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full font-medium text-sm transition-all duration-200 active:scale-[0.98] shadow-sm hover:shadow-md cursor-pointer"
+              style={{
+                backgroundColor: showAllTools ? '#111111' : 'var(--lp-accent, #FF6B00)',
+                color: showAllTools ? '#FFFFFF' : 'var(--lp-accent-text, #111111)',
+              }}
+            >
+              <SlidersHorizontal size={15} />
+              <span>{showAllTools ? 'Hide detailed tool breakdown' : 'Explore all tools & feature specs'}</span>
+              <ChevronDown 
+                size={16} 
+                className={`transition-transform duration-300 ${showAllTools ? 'rotate-180' : ''}`} 
+              />
+            </button>
+
+            <Link
+              to="/features"
+              className="text-xs text-ink-3 hover:text-black font-medium underline underline-offset-4 transition-colors"
+            >
+              or open standalone /features page &rarr;
+            </Link>
+          </div>
+          
+          <p className="text-xs text-[#666666] mt-3 max-w-md">
+            {showAllTools 
+              ? 'Viewing all 6 granular tool specs and modal workflows below.' 
+              : 'Deep dive into task modals, AI prompt parameters, collaboration threads, and theme studio.'}
+          </p>
         </div>
 
       </div>
